@@ -32,6 +32,42 @@ Kin•Do is an AI-powered daily activity planner for families that generates per
   - Turbopack for fast refresh
   - ESLint for code quality
 
+## Deployment
+
+### Vercel Deployment
+
+1. Push your code to GitHub
+2. Import your repository in Vercel
+3. Configure the following environment variables in Vercel's dashboard:
+   ```env
+   # Use your production URL (e.g., https://kindo.vercel.app)
+   NEXT_PUBLIC_APP_URL="https://your-production-domain.com"
+   NEXTAUTH_URL="https://your-production-domain.com"
+   
+   # Generate a new secret for production
+   NEXTAUTH_SECRET="generate-a-new-secure-secret"
+   
+   # Your production database URL
+   DATABASE_URL="your-production-database-url"
+   ```
+
+   > **Important**: Never use localhost URLs in production environment variables. Always use your actual production domain.
+   > - For the main deployment, use your custom domain or Vercel-provided URL
+   > - For preview deployments, Vercel will automatically provide a unique URL
+
+4. Deploy your application
+
+### Environment Variables by Environment
+
+| Variable | Local Development | Vercel Preview | Vercel Production |
+|----------|------------------|----------------|-------------------|
+| `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` | Automatic* | Your production URL |
+| `NEXTAUTH_URL` | `http://localhost:3000` | Automatic* | Your production URL |
+| `NEXTAUTH_SECRET` | Any secure string | Same as prod | Generate secure secret |
+| `DATABASE_URL` | Local DB URL | Preview DB URL | Production DB URL |
+
+\* Vercel automatically sets the correct URLs for preview deployments
+
 ## Getting Started
 
 ### Prerequisites

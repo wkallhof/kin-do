@@ -20,7 +20,7 @@ export function LocationStep() {
       home: {
         ...state.locationData.home,
         availableThings: Object.entries(commonThings).reduce(
-          (acc, [_, items]) => ({
+          (acc, [, items]) => ({
             ...acc,
             ...items.reduce((itemAcc, item) => ({
               ...itemAcc,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { Activity, FocusArea } from "../types";
 import { RefinementPanel } from "./RefinementPanel";
 import { ActivityCard } from "./ActivityCard";
@@ -32,124 +32,97 @@ export function ClientActivitiesPage({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Array<{ id: number; activityData: Activity }>>([]);
-  const isInitialLoadRef = useRef(true);
+  
+  // Filter resources and focus areas based on current selections
+  const filteredResources = useMemo(() => 
+    resources.filter(resource => 
+      environment === "both" || resource.environment === (environment as typeof environmentEnum.enumValues[number])
+    ), [environment, resources]);
 
-  // Load favorites on initial render
-  useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        const response = await fetch('/api/favorites');
-        if (!response.ok) {
-          throw new Error('Failed to load favorites');
-        }
-        const data = await response.json();
-        setFavorites(data);
-      } catch (err) {
-        console.error('Error loading favorites:', err);
-      }
-    };
+  const filteredFocusAreas = useMemo(() => 
+    focusAreas.filter(area => 
+      !area.familyMemberId || selectedMembers.includes(area.familyMemberId.toString())
+    ), [focusAreas, selectedMembers]);
 
-    loadFavorites();
-  }, []);
-
-  // Filter resources based on selected environment
-  const filteredResources = resources.filter(
-    resource => environment === "both" || resource.environment === (environment as typeof environmentEnum.enumValues[number])
-  );
-
-  // Filter focus areas based on selected family members
-  const filteredFocusAreas = focusAreas.filter(
-    area => !area.familyMemberId || selectedMembers.includes(area.familyMemberId.toString())
-  );
-
-  const generateActivities = async () => {
-    setIsLoading(true);
-    setError(null);
-    
+  const generateActivities = useCallback(async (abortSignal?: AbortSignal) => {
     try {
-      // Map selectedMembers to actual member objects, filtering out any undefined values
+      setError(null);
+      setIsLoading(true);
+      
       const selectedMemberObjects = selectedMembers
         .map(id => familyMembers.find(m => m.id.toString() === id))
-        .filter(member => member !== undefined);
+        .filter((member): member is NonNullable<typeof member> => member !== undefined);
       
-      // If no members are selected, don't make the API call
       if (selectedMemberObjects.length === 0) {
         setActivities([]);
-        setIsLoading(false);
         return;
       }
       
       const requestData = {
         environment,
-        selectedMembers: selectedMemberObjects.map(member => ({
-          id: member?.id,
-          name: member?.name,
-          role: member?.role,
-        })),
-        focusAreas: filteredFocusAreas.map(area => ({
-          id: area.id,
-          title: area.title,
-          category: area.category,
-          familyMemberId: area.familyMemberId,
-          familyMemberName: area.familyMemberName
-        })),
-        resources: filteredResources.map(resource => ({
-          id: resource.id,
-          name: resource.name,
-          environment: resource.environment
-        }))
+        selectedMembers: selectedMemberObjects.map(({ id, name, role }) => ({ id, name, role })),
+        focusAreas: filteredFocusAreas.map(({ id, title, category, familyMemberId, familyMemberName }) => 
+          ({ id, title, category, familyMemberId, familyMemberName })),
+        resources: filteredResources.map(({ id, name, environment }) => ({ id, name, environment }))
       };
-      
-      const requestBody = JSON.stringify(requestData);
-      if (!requestBody || requestBody === '{}' || requestBody === '[]') {
-        setError('Unable to prepare request data. Please try again.');
-        setIsLoading(false);
-        return;
-      }
 
       const response = await fetch('/api/activities-generation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
         },
-        body: requestBody
+        body: JSON.stringify(requestData),
+        signal: abortSignal
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        throw new Error('Failed to generate activities');
       }
 
       const data = await response.json();
-      
       if (!Array.isArray(data)) {
-        throw new Error('Invalid response format: expected an array');
+        throw new Error('Invalid response format');
       }
       
-      setActivities(data);
-      
+      if (!abortSignal?.aborted) {
+        setActivities(data);
+      }
     } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        return; // Ignore abort errors
+      }
       setError(err instanceof Error ? err.message : 'Failed to generate activities');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [environment, selectedMembers, familyMembers, filteredFocusAreas, filteredResources]);
 
-  // Combined effect for initial load and refinement changes
+  // Load favorites once on mount
   useEffect(() => {
-    if (isInitialLoadRef.current) {
-      isInitialLoadRef.current = false;
-    }
-    setActivities([]); // Clear current activities
-    generateActivities();
-  }, [environment, selectedMembers, familyMembers.length, focusAreas.length, resources.length]);
-  
-  const handleRefresh = useCallback(() => {
-    setActivities([]); // Clear activities immediately
-    generateActivities();
+    const loadFavorites = async () => {
+      try {
+        const response = await fetch('/api/favorites');
+        if (!response.ok) throw new Error('Failed to load favorites');
+        const data = await response.json();
+        setFavorites(data);
+      } catch (err) {
+        console.error('Error loading favorites:', err);
+      }
+    };
+    loadFavorites();
   }, []);
+
+  // Generate activities when refinements change
+  useEffect(() => {
+    const abortController = new AbortController();
+    generateActivities(abortController.signal);
+    return () => abortController.abort();
+  }, [generateActivities]);
+
+  const handleRefresh = useCallback(() => {
+    generateActivities();
+  }, [generateActivities]);
   
   const handleSelectActivity = (activity: Activity) => {
     setSelectedActivity(activity);
@@ -228,10 +201,15 @@ export function ClientActivitiesPage({
 
       <PullToRefresh onRefresh={handleRefresh} isLoading={isLoading}>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {isLoading && !activities.length ? (
+          {isLoading ? (
+            // Show 3 skeleton cards while loading
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="space-y-2">
+              <div key={i} className="space-y-4">
                 <Skeleton className="h-[200px] w-full rounded-lg" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
               </div>
             ))
           ) : error ? (
