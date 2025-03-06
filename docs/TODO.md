@@ -1,0 +1,13 @@
+- [x] Make the Activity Detail a sheet that comes up from the bottom
+- [x] Update Activity List to refresh on refinement change
+- [ ] Update AI calls to use `ai` library to stream objects
+- [x] Implement "My Profile"
+- [x] Clean up the duplicate close buttons
+- [ ] Implement animated avatar creator
+- [x] Implement Favorites functionality. Create better CTA to it from the Activities page
+- [x] Standardize page headers 
+- [ ] Standardize containers
+- [ ] Store activities in local storage for Today's activities
+- [x] Clean up Family Cards
+- [x] Move Indoor / Outdoor indicator on activity card to bottom row
+- [ ] Fix bug with double loading / API calls to get activities

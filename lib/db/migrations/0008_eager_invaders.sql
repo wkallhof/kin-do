@@ -1,0 +1,1 @@
+ALTER TABLE "focus_areas" DROP COLUMN "is_active";
