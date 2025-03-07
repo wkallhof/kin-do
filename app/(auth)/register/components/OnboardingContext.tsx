@@ -7,12 +7,13 @@ export type OnboardingStep = "family" | "location" | "account";
 interface FamilyMember {
   name: string;
   role: string;
-  ageGroup?: string;
+  dateOfBirth?: Date;
 }
 
 interface OnboardingState {
   step: OnboardingStep;
   familyData: {
+    familyName: string;
     primaryGuardian: {
       name: string;
       role: "primary_guardian" | "secondary_guardian";
@@ -31,6 +32,7 @@ interface OnboardingState {
 const initialState: OnboardingState = {
   step: "family",
   familyData: {
+    familyName: "",
     primaryGuardian: {
       name: "",
       role: "primary_guardian",

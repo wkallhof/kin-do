@@ -1,29 +1,21 @@
+import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
-import { NextRequestWithAuth } from "next-auth/middleware";
 
-export default async function middleware(request: NextRequestWithAuth) {
-  const token = await getToken({ req: request });
-  const { pathname } = request.nextUrl;
-
-  // Handle auth pages (login and register)
-  if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
-    if (token) {
-      return NextResponse.redirect(new URL("/activities", request.url));
-    }
-    return NextResponse.next();
+// Use auth as middleware with custom logic
+export default auth((req) => {
+  // If user is authenticated and trying to access auth pages, redirect to activities
+  if (req.auth && (
+    req.nextUrl.pathname.startsWith("/login") || 
+    req.nextUrl.pathname.startsWith("/register")
+  )) {
+    return NextResponse.redirect(new URL("/activities", req.nextUrl.origin));
   }
+  
+  // If user is not authenticated and trying to access protected routes,
+  // the auth middleware will automatically redirect to login
+});
 
-  // Handle protected routes (anything in the authenticated group)
-  if (pathname.startsWith("/(authenticated)") || pathname === "/activities") {
-    if (!token) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-  }
-
-  return NextResponse.next();
-}
-
+// Specify which routes this middleware applies to
 export const config = {
   matcher: [
     "/login/:path*",
@@ -31,4 +23,4 @@ export const config = {
     "/activities/:path*",
     "/(authenticated)/:path*"
   ],
-}; 
+};

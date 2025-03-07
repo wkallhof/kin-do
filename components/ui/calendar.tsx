@@ -60,11 +60,15 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
+        PreviousMonthButton: (props) => (
+          <button {...props} className={cn("h-7 w-7", props.className)}>
+            <ChevronLeft className="h-4 w-4" />
+          </button>
         ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("h-4 w-4", className)} {...props} />
+        NextMonthButton: (props) => (
+          <button {...props} className={cn("h-7 w-7", props.className)}>
+            <ChevronRight className="h-4 w-4" />
+          </button>
         ),
       }}
       {...props}

@@ -15,8 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useOnboarding } from "../OnboardingContext";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useState } from "react";
+import { completeRegistration } from "../../actions";
+import { format } from "date-fns";
 
 const accountSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -32,8 +34,8 @@ type AccountValues = z.infer<typeof accountSchema>;
 export function AccountStep() {
   const { state, resetOnboarding } = useOnboarding();
   const router = useRouter();
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
 
   const form = useForm<AccountValues>({
     resolver: zodResolver(accountSchema),
@@ -45,66 +47,30 @@ export function AccountStep() {
   });
 
   async function onSubmit(data: AccountValues) {
+    if (!showSummary) {
+      // First show the summary before final submission
+      setShowSummary(true);
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       
-      // Register the user
-      const registerResponse = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: state.familyData.primaryGuardian.name,
+      // Use the server action to complete registration and onboarding
+      const result = await completeRegistration({
+        familyData: state.familyData,
+        locationData: state.locationData,
+        accountData: {
           email: data.email,
           password: data.password,
-        }),
-      });
-      
-      if (!registerResponse.ok) {
-        const error = await registerResponse.json();
-        throw new Error(error.message || 'Failed to register');
-      }
-      
-      // Sign in the user
-      const signInResponse = await fetch('/api/auth/callback/credentials', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-          redirect: false,
-        }),
       });
       
-      if (!signInResponse.ok) {
-        throw new Error('Failed to sign in');
-      }
-      
-      // Complete onboarding by creating family and family member
-      const onboardingResponse = await fetch('/api/onboarding', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          familyName: 'My Family',
-          primaryGuardian: {
-            name: state.familyData.primaryGuardian.name,
-            role: state.familyData.primaryGuardian.role,
-          },
-        }),
-      });
-      
-      if (!onboardingResponse.ok) {
-        const error = await onboardingResponse.json();
-        throw new Error(error.message || 'Failed to complete onboarding');
+      if (!result.success) {
+        throw new Error(result.error || "Failed to complete registration");
       }
 
-      toast({
-        title: "Account created successfully!",
+      toast.success("Account created successfully!", {
         description: "Welcome to Kin•Do. Let's get started!",
       });
 
@@ -115,9 +81,7 @@ export function AccountStep() {
       router.push("/activities");
     } catch (error) {
       console.error('Registration error:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
+      toast.error("Error", {
         description: error instanceof Error ? error.message : "Something went wrong. Please try again.",
       });
     } finally {
@@ -134,72 +98,145 @@ export function AccountStep() {
         </p>
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="name@example.com"
-                    type="email"
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    autoCorrect="off"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      {showSummary ? (
+        <div className="space-y-6">
+          <div className="rounded-lg border p-4">
+            <h3 className="text-md font-medium mb-2">Family Information</h3>
+            <div className="space-y-2">
+              <div>
+                <p className="text-sm font-medium">Family Name</p>
+                <p className="text-sm">{state.familyData.familyName}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div>
+                  <p className="text-sm font-medium">Primary Guardian</p>
+                  <p className="text-sm">{state.familyData.primaryGuardian.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Role</p>
+                  <p className="text-sm capitalize">
+                    {state.familyData.primaryGuardian.role.replace('_', ' ')}
+                  </p>
+                </div>
+              </div>
+              
+              {state.familyData.additionalMembers && state.familyData.additionalMembers.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium mt-2">Additional Family Members</p>
+                  <ul className="text-sm list-disc pl-5 mt-1">
+                    {state.familyData.additionalMembers.map((member, index) => (
+                      <li key={index}>
+                        {member.name} ({member.role}
+                        {member.dateOfBirth ? `, ${format(new Date(member.dateOfBirth), 'MMMM d, yyyy')}` : ''})
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <div className="rounded-lg border p-4">
+            <h3 className="text-md font-medium mb-2">Account Information</h3>
+            <div className="space-y-2">
+              <div>
+                <p className="text-sm font-medium">Email</p>
+                <p className="text-sm">{form.getValues().email}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Password</p>
+                <p className="text-sm">••••••••</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex space-x-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="flex-1"
+              onClick={() => setShowSummary(false)}
+            >
+              Back
+            </Button>
+            <Button 
+              type="button" 
+              className="flex-1" 
+              onClick={form.handleSubmit(onSubmit)}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating Account..." : "Confirm & Create Account"}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="name@example.com"
+                      type="email"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      autoCorrect="off"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Create a password"
-                    type="password"
-                    autoComplete="new-password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Create a password"
+                      type="password"
+                      autoComplete="new-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Confirm your password"
-                    type="password"
-                    autoComplete="new-password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Confirm your password"
+                      type="password"
+                      autoComplete="new-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating Account..." : "Create Account"}
-          </Button>
-        </form>
-      </Form>
+            <Button type="submit" className="w-full">
+              Continue
+            </Button>
+          </form>
+        </Form>
+      )}
     </div>
   );
 } 

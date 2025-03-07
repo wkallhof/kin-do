@@ -16,7 +16,7 @@ const resourceUpdateSchema = z.object({
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify authentication
@@ -62,7 +62,7 @@ export async function PUT(
     }
     
     // Get the resource ID from the URL
-    const { id } = params;
+    const { id } = await params;
     
     // Parse and validate request body
     const body = await request.json();
@@ -121,7 +121,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify authentication
@@ -167,7 +167,7 @@ export async function DELETE(
     }
     
     // Get the resource ID from the URL
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the resource exists and belongs to the user's family
     const existingResource = await db.select()

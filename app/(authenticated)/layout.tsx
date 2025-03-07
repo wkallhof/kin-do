@@ -1,15 +1,15 @@
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { MainNav } from "./components/main-nav";
 import { UserNav } from "./components/user-nav";
 import { MobileNav } from "./components/mobile-nav";
+import { auth } from "@/lib/auth";
 
 export default async function AuthenticatedLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  const session = await auth()
 
   if (!session?.user) {
     redirect("/login");

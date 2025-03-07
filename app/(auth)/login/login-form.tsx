@@ -6,6 +6,7 @@ import { z } from "zod";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,7 +17,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -27,27 +27,23 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();
-  const { toast } = useToast();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const register = searchParams.get("register");
     if (register === "success") {
-      toast({
-        title: "Registration Successful",
+      toast.success("Registration Successful", {
         description: "Your account has been created. Please sign in.",
       });
       router.replace("/login", { scroll: false });
     } else if (register === "error") {
-      toast({
-        variant: "destructive",
-        title: "Registration Failed",
+      toast.error("Registration Failed", {
         description: "There was an error creating your account. Please try again.",
       });
       router.replace("/login", { scroll: false });
     }
-  }, [searchParams, toast, router]);
+  }, [searchParams, router]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -68,9 +64,7 @@ export function LoginForm() {
       });
 
       if (result?.error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
+        toast.error("Error", {
           description: "Invalid email or password",
         });
         return;
@@ -79,9 +73,7 @@ export function LoginForm() {
       router.push("/activities");
       router.refresh();
     } catch {
-      toast({
-        variant: "destructive",
-        title: "Error",
+      toast.error("Error", {
         description: "Something went wrong. Please try again.",
       });
     } finally {

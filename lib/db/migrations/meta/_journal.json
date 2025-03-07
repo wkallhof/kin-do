@@ -71,6 +71,27 @@
       "when": 1741147167560,
       "tag": "0009_crazy_hedge_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1741318821189,
+      "tag": "0010_fair_starfox",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1741318904777,
+      "tag": "0011_bitter_network",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1741318952350,
+      "tag": "0012_hot_mentor",
+      "breakpoints": true
     }
   ]
 }
