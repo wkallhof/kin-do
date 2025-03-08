@@ -89,7 +89,7 @@ export function FocusAreaDetailDialog({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[10px] border-t-0 max-w-4xl mx-auto pt-8"
+        className="h-[90vh] rounded-t-[10px] border-t-0 max-w-4xl mx-auto pt-6 flex flex-col overflow-hidden"
       >
         <SheetHeader>
           <SheetTitle className="text-2xl font-bold">
@@ -104,7 +104,7 @@ export function FocusAreaDetailDialog({
           </SheetDescription>
         </SheetHeader>
 
-        <ScrollArea className="flex-1 mt-6">
+        <ScrollArea className="flex-1 mt-4 h-[calc(90vh-100px)] overflow-y-auto">
           <Suspense fallback={<div>Loading...</div>}>
             <FocusAreaForm 
               focusAreaId={area?.id}

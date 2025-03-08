@@ -95,7 +95,7 @@ export function FamilyMemberDetailDialog({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[10px] border-t-0 max-w-4xl mx-auto pt-8"
+        className="h-[90vh] rounded-t-[10px] border-t-0 max-w-4xl mx-auto pt-6 flex flex-col overflow-hidden"
       >
         <SheetHeader>
           <SheetTitle className="text-2xl font-bold">
@@ -108,10 +108,10 @@ export function FamilyMemberDetailDialog({
           </SheetDescription>
         </SheetHeader>
 
-        <ScrollArea className="flex-1 mt-6">
+        <ScrollArea className="flex-1 mt-4 h-[calc(90vh-100px)] overflow-y-auto">
           {isEdit ? (
             <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsList className="grid w-full grid-cols-2 mb-4">
                 <TabsTrigger value="details">Details</TabsTrigger>
                 <TabsTrigger value="focus-areas">Focus Areas</TabsTrigger>
               </TabsList>
