@@ -10,12 +10,14 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user;
-      const isOnProtectedRoute = 
-        request.nextUrl.pathname.startsWith('/activities') || 
-        request.nextUrl.pathname.startsWith('/(authenticated)');
+      const isAuthRoute = 
+        request.nextUrl.pathname.startsWith('/(auth)') ||
+        request.nextUrl.pathname === '/login' ||
+        request.nextUrl.pathname === '/register' ||
+        request.nextUrl.pathname === '/';
       
-      // Allow public access to auth pages, require auth for protected routes
-      return isLoggedIn || !isOnProtectedRoute;
+      // Allow access to auth routes without login, require login for all other routes
+      return isLoggedIn || isAuthRoute;
     },
   },
   trustHost: true, // Trust the host for authentication

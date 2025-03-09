@@ -62,11 +62,14 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user;
-      const isOnProtectedRoute = 
-        request.nextUrl.pathname.startsWith('/activities') || 
-        request.nextUrl.pathname.startsWith('/(authenticated)');
+      const isAuthRoute = 
+        request.nextUrl.pathname.startsWith('/(auth)') ||
+        request.nextUrl.pathname === '/login' ||
+        request.nextUrl.pathname === '/register' ||
+        request.nextUrl.pathname === '/';
       
-      return isLoggedIn || !isOnProtectedRoute;
+      // Allow access to auth routes without login, require login for all other routes
+      return isLoggedIn || isAuthRoute;
     },
   },
   // Add trusted hosts configuration for development and production
