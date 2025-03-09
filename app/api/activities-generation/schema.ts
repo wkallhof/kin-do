@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { environmentEnum } from '@/lib/db/schema/resources';
 
 // Update the schema to allow 'both'
 const activityEnvironmentEnum = z.enum(['indoor', 'outdoor', 'both']);
