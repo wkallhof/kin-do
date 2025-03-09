@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ActivityCard } from "./activity-card";
 import { toast } from "sonner";
 import { ActivityDetailDialog } from "../../activities/components/ActivityDetailDialog";
-import { Activity } from "../../activities/types";
+import { type Activity } from "@/app/(authenticated)/activities/types";
 
 interface FavoriteActivity {
   id: number;

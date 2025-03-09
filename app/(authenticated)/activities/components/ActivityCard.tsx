@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Activity } from "../types";
+import { type Activity } from "@/app/(authenticated)/activities/types";
 
 interface ActivityCardProps {
   activity: Activity;
@@ -47,7 +47,7 @@ export function ActivityCard({ activity, onSelect }: ActivityCardProps) {
       </CardHeader>
       <CardContent className="pb-2">
         <div className="flex flex-wrap gap-1 mb-2">
-          {focusAreas?.slice(0, 3).map((area, index) => (
+          {focusAreas?.slice(0, 3).map((area: { title: string }, index: number) => (
             <Badge key={index} variant="outline" className="text-xs">
               {area.title}
             </Badge>

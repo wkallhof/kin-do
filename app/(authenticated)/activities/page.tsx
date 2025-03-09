@@ -1,12 +1,11 @@
-import { Suspense } from 'react';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users, familyMembers, focusAreas, resources } from '@/lib/db/schema';
-import { ClientActivitiesPage } from './components/ClientActivitiesPage'
 import { PageHeader } from '../components/page-header';
 import { Toaster } from 'sonner';
+import { ClientActivitiesPage } from './components/ClientActivitiesPage';
 
 export default async function ActivitiesPage() {
   const session = await auth();
@@ -72,13 +71,11 @@ export default async function ActivitiesPage() {
         description="Get the latest activities for your family"
       />
 
-      <Suspense fallback={<div>Loading activities...</div>}>
-        <ClientActivitiesPage
-          familyMembers={members}
-          focusAreas={familyFocusAreas}
-          resources={familyResources}
-        />
-      </Suspense>
+      <ClientActivitiesPage
+        familyMembers={members}
+        focusAreas={familyFocusAreas}
+        resources={familyResources}
+      />
       
       <Toaster />
     </main>

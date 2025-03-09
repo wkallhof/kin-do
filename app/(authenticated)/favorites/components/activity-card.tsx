@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Activity } from "../../activities/types";
+import { type Activity } from "@/app/(authenticated)/activities/types";
 import { Badge } from "@/components/ui/badge";
 
 interface ActivityCardProps {

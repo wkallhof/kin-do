@@ -1,6 +1,6 @@
 - [x] Make the Activity Detail a sheet that comes up from the bottom
 - [x] Update Activity List to refresh on refinement change
-- [ ] Update AI calls to use `ai` library to stream objects
+- [x] Update AI calls to use `ai` library to stream objects
 - [x] Implement "My Profile"
 - [x] Clean up the duplicate close buttons
 - [ ] Implement animated avatar creator

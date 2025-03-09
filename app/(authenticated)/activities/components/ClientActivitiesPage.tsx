@@ -1,15 +1,19 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
-import { Activity, FocusArea } from "../types";
+import { useState } from "react";
 import { RefinementPanel } from "./RefinementPanel";
 import { ActivityCard } from "./ActivityCard";
 import { ActivityDetailDialog } from "./ActivityDetailDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { resources, environmentEnum } from "@/lib/db/schema/resources";
 import { familyMembers } from "@/lib/db/schema/families";
-import { PullToRefresh } from "./PullToRefresh";
 import { toast } from "sonner";
+import { experimental_useObject as useObject } from '@ai-sdk/react';
+import { activitySchema } from '@/app/api/activities-generation/schema';
+import { z } from 'zod';
+import { Button } from "@/components/ui/button";
+import { type FocusArea } from "@/lib/db/schema/focus-areas";
+import { type Activity } from "@/app/(authenticated)/activities/types";
 
 type Environment = "indoor" | "outdoor" | "both";
 
@@ -28,101 +32,36 @@ export function ClientActivitiesPage({
   const [selectedMembers, setSelectedMembers] = useState<string[]>(familyMembers.map(m => m.id.toString()));
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Array<{ id: number; activityData: Activity }>>([]);
-  
-  // Filter resources and focus areas based on current selections
-  const filteredResources = useMemo(() => 
-    resources.filter(resource => 
-      environment === "both" || resource.environment === (environment as typeof environmentEnum.enumValues[number])
-    ), [environment, resources]);
 
-  const filteredFocusAreas = useMemo(() => 
-    focusAreas.filter(area => 
-      !area.familyMemberId || selectedMembers.includes(area.familyMemberId.toString())
-    ), [focusAreas, selectedMembers]);
+  const { object, isLoading, error, submit, stop } = useObject({
+    api: '/api/activities-generation',
+    schema: z.array(activitySchema),
+  });
 
-  const generateActivities = useCallback(async (abortSignal?: AbortSignal) => {
-    try {
-      setError(null);
-      setIsLoading(true);
-      
-      const selectedMemberObjects = selectedMembers
-        .map(id => familyMembers.find(m => m.id.toString() === id))
-        .filter((member): member is NonNullable<typeof member> => member !== undefined);
-      
-      if (selectedMemberObjects.length === 0) {
-        setActivities([]);
-        return;
-      }
-      
-      const requestData = {
-        environment,
-        selectedMembers: selectedMemberObjects.map(({ id, name, role }) => ({ id, name, role })),
-        focusAreas: filteredFocusAreas.map(({ id, title, category, familyMemberId, familyMemberName }) => 
-          ({ id, title, category, familyMemberId, familyMemberName })),
-        resources: filteredResources.map(({ id, name, environment }) => ({ id, name, environment }))
-      };
-
-      const response = await fetch('/api/activities-generation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-        },
-        body: JSON.stringify(requestData),
-        signal: abortSignal
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate activities');
-      }
-
-      const data = await response.json();
-      if (!Array.isArray(data)) {
-        throw new Error('Invalid response format');
-      }
-      
-      if (!abortSignal?.aborted) {
-        setActivities(data);
-      }
-    } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
-        return; // Ignore abort errors
-      }
-      setError(err instanceof Error ? err.message : 'Failed to generate activities');
-    } finally {
-      setIsLoading(false);
+  const handleGenerateActivities = () => {
+    const selectedMemberObjects = selectedMembers
+      .map(id => familyMembers.find(m => m.id.toString() === id))
+      .filter((member): member is NonNullable<typeof member> => member !== undefined);
+    
+    if (selectedMemberObjects.length === 0) {
+      toast.error('Please select at least one family member');
+      return;
     }
-  }, [environment, selectedMembers, familyMembers, filteredFocusAreas, filteredResources]);
-
-  // Load favorites once on mount
-  useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        const response = await fetch('/api/favorites');
-        if (!response.ok) throw new Error('Failed to load favorites');
-        const data = await response.json();
-        setFavorites(data);
-      } catch (err) {
-        console.error('Error loading favorites:', err);
-      }
+    
+    const requestData = {
+      environment,
+      selectedMembers: selectedMemberObjects.map(({ id, name, role }) => ({ id, name, role })),
+      focusAreas: focusAreas.filter(area => 
+        !area.familyMemberId || selectedMembers.includes(area.familyMemberId.toString())
+      ),
+      resources: resources.filter(resource => 
+        environment === "both" || resource.environment === (environment as typeof environmentEnum.enumValues[number])
+      ),
     };
-    loadFavorites();
-  }, []);
 
-  // Generate activities when refinements change
-  useEffect(() => {
-    const abortController = new AbortController();
-    generateActivities(abortController.signal);
-    return () => abortController.abort();
-  }, [generateActivities]);
-
-  const handleRefresh = useCallback(() => {
-    generateActivities();
-  }, [generateActivities]);
+    submit(requestData);
+  };
   
   const handleSelectActivity = (activity: Activity) => {
     setSelectedActivity(activity);
@@ -145,8 +84,6 @@ export function ClientActivitiesPage({
 
       const newFavorite = await response.json();
       setFavorites(prev => [...prev, newFavorite]);
-      
-      // Don't close the dialog automatically
     } catch (err) {
       console.error('Error saving favorite:', err);
       toast.error('Failed to save favorite');
@@ -164,8 +101,6 @@ export function ClientActivitiesPage({
       }
 
       setFavorites(prev => prev.filter(fav => fav.id !== favoriteId));
-      
-      // Don't close the dialog automatically
     } catch (err) {
       console.error('Error removing favorite:', err);
       toast.error('Failed to remove favorite');
@@ -188,49 +123,72 @@ export function ClientActivitiesPage({
 
   return (
     <div className="space-y-6">
-      
       <RefinementPanel
         environment={environment}
         setEnvironment={setEnvironment}
         familyMembers={familyMembers}
         selectedMembers={selectedMembers}
         setSelectedMembers={setSelectedMembers}
-        onRefresh={handleRefresh}
+        onRefresh={handleGenerateActivities}
         isLoading={isLoading}
       />
 
-      <PullToRefresh onRefresh={handleRefresh} isLoading={isLoading}>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {isLoading ? (
-            // Show 3 skeleton cards while loading
-            Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="h-[200px] w-full rounded-lg" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                </div>
-              </div>
-            ))
-          ) : error ? (
-            <div className="col-span-full p-4 text-center text-red-500">
-              Error generating activities: {error}. Please try again.
+      <div className="flex justify-center">
+        {isLoading ? (
+          <Button 
+            variant="outline"
+            onClick={() => stop()}
+            className="w-full max-w-sm"
+          >
+            Stop Generation
+          </Button>
+        ) : (
+          <Button 
+            onClick={handleGenerateActivities}
+            className="w-full max-w-sm"
+          >
+            Generate Activities
+          </Button>
+        )}
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Render existing activities as they stream in */}
+        {object?.map((activity, index) => (
+          activity && (
+            <ActivityCard
+              key={`${activity.title}-${index}`}
+              activity={activity as Activity}
+              onSelect={handleSelectActivity}
+            />
+          )
+        ))}
+
+        {/* Show skeletons for remaining activities while loading */}
+        {isLoading && Array.from({ length: 3 - (object?.length || 0) }).map((_, i) => (
+          <div key={`skeleton-${i}`} className="space-y-4">
+            <Skeleton className="h-[200px] w-full rounded-lg" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
             </div>
-          ) : activities.length === 0 ? (
-            <div className="col-span-full p-4 text-center text-muted-foreground">
-              No activities found. Try adjusting your filters or refreshing.
-            </div>
-          ) : (
-            activities.map((activity, index) => (
-              <ActivityCard
-                key={activity.id || index}
-                activity={activity}
-                onSelect={handleSelectActivity}
-              />
-            ))
-          )}
-        </div>
-      </PullToRefresh>
+          </div>
+        ))}
+
+        {/* Show error state if there's an error */}
+        {error && (
+          <div className="col-span-full p-4 text-center text-red-500">
+            Error generating activities. Please try again.
+          </div>
+        )}
+
+        {/* Show empty state when no activities and not loading */}
+        {!isLoading && !error && (!object || object.length === 0) && (
+          <div className="col-span-full p-4 text-center text-muted-foreground">
+            Click the button above to generate activities.
+          </div>
+        )}
+      </div>
 
       <ActivityDetailDialog
         activity={selectedActivity}

@@ -11,11 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Heart } from "lucide-react";
-import { Activity } from "../types";
 import ReactMarkdown from 'react-markdown';
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { Activity } from "../types";
 
 interface ActivityDetailDialogProps {
   activity: Activity | null;
@@ -82,32 +82,34 @@ export function ActivityDetailDialog({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[10px] border-t-0 max-w-2xl mx-auto pt-8"
+        className="h-[90vh] rounded-t-[10px] border-t-0 max-w-2xl mx-auto flex flex-col p-0"
       >
-        <SheetHeader>
-          <div className="flex items-center gap-2">
-            <SheetTitle className="text-xl">{title}</SheetTitle>
-            <SheetDescription className="sr-only">
-              Activity detail dialog for Kin•Do
-            </SheetDescription>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleFavoriteToggle}
-              className="h-9 w-9 shrink-0"
-              disabled={isSubmitting}
-            >
-              <Heart 
-                className={cn(
-                  "h-5 w-5",
-                  isFavorite ? "fill-current text-red-500" : ""
-                )} 
-              />
-            </Button>
-          </div>
-        </SheetHeader>
+        <div className="px-6 pt-8">
+          <SheetHeader>
+            <div className="flex items-center gap-2">
+              <SheetTitle className="text-xl">{title}</SheetTitle>
+              <SheetDescription className="sr-only">
+                Activity detail dialog for Kin•Do
+              </SheetDescription>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleFavoriteToggle}
+                className="h-9 w-9 shrink-0"
+                disabled={isSubmitting}
+              >
+                <Heart 
+                  className={cn(
+                    "h-5 w-5",
+                    isFavorite ? "fill-current text-red-500" : ""
+                  )} 
+                />
+              </Button>
+            </div>
+          </SheetHeader>
+        </div>
 
-        <ScrollArea className="flex-1 mt-6">
+        <ScrollArea className="flex-1 mt-6 px-6 pb-6">
           <div className="space-y-6 pr-4">
             {environment && (
               <div className="flex items-center">
