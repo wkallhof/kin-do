@@ -69,4 +69,6 @@ export const authConfig = {
       return isLoggedIn || !isOnProtectedRoute;
     },
   },
+  // Add trusted hosts configuration for development and production
+  trustHost: true,
 } satisfies NextAuthConfig; 

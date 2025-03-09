@@ -11,3 +11,4 @@
 - [x] Clean up Family Cards
 - [x] Move Indoor / Outdoor indicator on activity card to bottom row
 - [ ] Fix bug with double loading / API calls to get activities
+- [ ] Implement progressive web app
