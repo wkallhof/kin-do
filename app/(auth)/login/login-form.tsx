@@ -32,15 +32,18 @@ export function LoginForm() {
 
   useEffect(() => {
     const register = searchParams.get("register");
+    
     if (register === "success") {
       toast.success("Registration Successful", {
         description: "Your account has been created. Please sign in.",
       });
+      // Use path only to avoid redirect issues
       router.replace("/login", { scroll: false });
     } else if (register === "error") {
       toast.error("Registration Failed", {
         description: "There was an error creating your account. Please try again.",
       });
+      // Use path only to avoid redirect issues
       router.replace("/login", { scroll: false });
     }
   }, [searchParams, router]);
@@ -67,16 +70,17 @@ export function LoginForm() {
         toast.error("Error", {
           description: "Invalid email or password",
         });
+        setIsLoading(false);
         return;
       }
 
+      // Use path only to avoid redirect issues
       router.push("/activities");
       router.refresh();
     } catch {
       toast.error("Error", {
         description: "Something went wrong. Please try again.",
       });
-    } finally {
       setIsLoading(false);
     }
   }

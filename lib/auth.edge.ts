@@ -18,5 +18,6 @@ export const authConfig: NextAuthConfig = {
       return isLoggedIn || !isOnProtectedRoute;
     },
   },
+  trustHost: true, // Trust the host for authentication
   // No database adapter here
 }; 

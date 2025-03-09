@@ -22,7 +22,12 @@ export default function LoginPage() {
           <LoginForm />
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-primary hover:underline">
+            <Link 
+              href="/register" 
+              prefetch={true}
+              legacyBehavior={false}
+              className="text-primary hover:underline"
+            >
               Get started
             </Link>
           </div>

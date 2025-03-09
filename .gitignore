@@ -62,6 +62,8 @@ drizzle.config.js.map
 **/public/sw.js.map
 **/public/workbox-*.js.map
 **/public/worker-*.js.map
+**/public/fallback-*.js
+**/public/fallback-*.js.map
 
 # Sentry
 .sentryclirc
