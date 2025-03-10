@@ -1,20 +1,11 @@
-- [x] Make the Activity Detail a sheet that comes up from the bottom
-- [x] Update Activity List to refresh on refinement change
-- [x] Update AI calls to use `ai` library to stream objects
-- [x] Implement "My Profile"
-- [x] Clean up the duplicate close buttons
 - [ ] Implement animated avatar creator
-- [x] Implement Favorites functionality. Create better CTA to it from the Activities page
-- [x] Standardize page headers 
 - [ ] Standardize containers
-- [x] Store activities in local storage for Today's activities
-- [x] Clean up Family Cards
-- [x] Move Indoor / Outdoor indicator on activity card to bottom row
-- [x] Fix bug with double loading / API calls to get activities
-- [x] Implement progressive web app
 - [ ] Implement client-side loading containers vs server side rendered data to make app feel more app like
 - [ ] Update Profile screen to be a list of sections. Include the app build number at the bottom
 - [ ] Create color theme
 - [ ] Add transitions and motion design
-- [x] Fix login process (welcome screen showing even if logged in, etc.)
-- [x] Implement invite process
+- [ ] Provision email for app
+- [ ] Implement push notifications
+- [ ] Implement Email app link sign up
+- [ ] Implement email verification
+- [ ] Build out marketing site

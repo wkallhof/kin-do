@@ -8,7 +8,7 @@ export default function OfflinePage() {
         You appear to be offline. Check your internet connection and try again.
       </p>
       <Link 
-        href="/"
+        href="/welcome"
         className="px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
       >
         Try again

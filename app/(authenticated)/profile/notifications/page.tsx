@@ -1,13 +1,12 @@
-import { Suspense } from 'react';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
-import { AccountForm } from './components/account-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { NotificationsForm } from '../components/notifications-form';
 
-export default async function ProfilePage() {
+export default async function NotificationsPage() {
   const session = await auth();
   
   if (!session || !session.user) {
@@ -31,15 +30,13 @@ export default async function ProfilePage() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Account</CardTitle>
+          <CardTitle>Notification Settings</CardTitle>
           <CardDescription>
-            Manage your account information and password
+            Manage how and when you receive notifications
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Suspense fallback={<div>Loading account information...</div>}>
-            <AccountForm user={user} />
-          </Suspense>
+          <NotificationsForm user={user} />
         </CardContent>
       </Card>
     </div>

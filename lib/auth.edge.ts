@@ -4,7 +4,7 @@ import { NextAuthConfig } from "next-auth";
 // It doesn't include any database operations
 export const authConfig: NextAuthConfig = {
   pages: {
-    signIn: "/login",
+    signIn: "/welcome",
   },
   providers: [], // Empty providers array for edge compatibility
   callbacks: {
@@ -14,6 +14,7 @@ export const authConfig: NextAuthConfig = {
         request.nextUrl.pathname.startsWith('/(auth)') ||
         request.nextUrl.pathname === '/login' ||
         request.nextUrl.pathname === '/register' ||
+        request.nextUrl.pathname === '/welcome' ||
         request.nextUrl.pathname === '/';
       
       // Allow access to auth routes without login, require login for all other routes

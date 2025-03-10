@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm";
 // This config is used by middleware and doesn't include database adapter
 export const authConfig = {
   pages: {
-    signIn: "/login",
+    signIn: "/welcome",
   },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [

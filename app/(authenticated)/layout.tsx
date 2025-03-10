@@ -12,7 +12,7 @@ export default async function AuthenticatedLayout({
   const session = await auth()
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/welcome");
   }
 
   return (

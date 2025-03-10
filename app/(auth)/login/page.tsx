@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="container flex h-screen w-screen flex-col items-center justify-center">
+    <div className="flex min-h-screen w-full items-center justify-center px-4 py-12">
       <Card className="w-full max-w-[400px]">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
           <CardDescription className="text-center">
-            Sign in to your account
+            Sign in to your Kin•Do account
           </CardDescription>
         </CardHeader>
         <CardContent>

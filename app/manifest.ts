@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Kin Do",
     short_name: "Kin Do",
     description: "Family activities app",
-    start_url: "/",
+    start_url: "/welcome",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#000000",

@@ -9,6 +9,7 @@ export default auth((req) => {
   // If user is authenticated and trying to access auth pages, redirect to activities
   if (req.auth && (
     req.nextUrl.pathname.startsWith("/login") || 
+    req.nextUrl.pathname.startsWith("/welcome") ||
     req.nextUrl.pathname.startsWith("/register")
   )) {
     return NextResponse.redirect(new URL("/activities", baseUrl));
@@ -22,11 +23,11 @@ export default auth((req) => {
       req.nextUrl.pathname.startsWith("/activities") || 
       req.nextUrl.pathname.startsWith("/(authenticated)")
     ) {
-      const loginUrl = new URL("/login", baseUrl);
+      const loginUrl = new URL("/welcome", baseUrl);
       
       // Prevent redirect loops by checking if we're already coming from login
       const referer = req.headers.get("referer") || "";
-      if (referer.includes("/login")) {
+      if (referer.includes("/welcome")) {
         // Don't redirect if already coming from login page
         // Just continue to the destination
         return NextResponse.next();
@@ -44,6 +45,7 @@ export default auth((req) => {
 export const config = {
   matcher: [
     "/login/:path*",
+    "/welcome/:path*",
     "/register/:path*",
     "/activities/:path*",
     "/(authenticated)/:path*"

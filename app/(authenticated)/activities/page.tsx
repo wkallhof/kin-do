@@ -4,19 +4,18 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users, familyMembers, focusAreas, resources } from '@/lib/db/schema';
 import { PageHeader } from '../components/page-header';
-import { Toaster } from 'sonner';
 import { ClientActivitiesPage } from './components/ClientActivitiesPage';
 
 export default async function ActivitiesPage() {
   const session = await auth();
   
   if (!session || !session.user) {
-    redirect('/login');
+    redirect('/welcome');
   }
   
   const userEmail = session.user.email;
   if (!userEmail) {
-    redirect('/login');
+    redirect('/welcome');
   }
   
   const user = await db.query.users.findFirst({
@@ -76,8 +75,6 @@ export default async function ActivitiesPage() {
         focusAreas={familyFocusAreas}
         resources={familyResources}
       />
-      
-      <Toaster />
     </main>
   );
 } 

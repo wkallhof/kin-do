@@ -1,6 +1,5 @@
 import { PageHeader } from "../components/page-header";
 import { FavoritesList } from "./components/favorites-list";
-import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Favorite Activities | Kin•Do",
@@ -16,7 +15,6 @@ export default function FavoritesPage() {
       />
       
       <FavoritesList />
-      <Toaster />
     </main>
   );
 } 
