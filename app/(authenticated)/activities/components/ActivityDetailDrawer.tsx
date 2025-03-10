@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Activity } from "../types";
 import { ScrollDrawer } from "@/components/scroll-drawer";
 
-interface ActivityDetailDialogProps {
+interface ActivityDetailDrawerProps {
   activity: Activity | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -20,7 +20,7 @@ interface ActivityDetailDialogProps {
   onRemoveFavorite?: (favoriteId: number) => void;
 }
 
-export function ActivityDetailDialog({
+export function ActivityDetailDrawer({
   activity,
   open,
   onOpenChange,
@@ -28,7 +28,7 @@ export function ActivityDetailDialog({
   isFavorite = false,
   favoriteId,
   onRemoveFavorite,
-}: ActivityDetailDialogProps) {
+}: ActivityDetailDrawerProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!activity) return null;

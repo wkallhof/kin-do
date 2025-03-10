@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -130,121 +129,117 @@ export function FocusAreaForm({
   }
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter title" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    The name of the focus area.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description (Optional)</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Enter a brief description"
-                      rows={3}
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Additional details about this focus area.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="physical">Physical</SelectItem>
-                      <SelectItem value="educational">Educational</SelectItem>
-                      <SelectItem value="creative">Creative</SelectItem>
-                      <SelectItem value="social">Social</SelectItem>
-                      <SelectItem value="life_skills">Life Skills</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    The type of skills or activities this focus area targets.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="priority"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Priority</FormLabel>
-                  <Select
-                    onValueChange={(value) => field.onChange(parseInt(value))}
-                    defaultValue={field.value.toString()}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select priority" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="1">Low</SelectItem>
-                      <SelectItem value="2">Medium</SelectItem>
-                      <SelectItem value="3">High</SelectItem>
-                      <SelectItem value="4">Very High</SelectItem>
-                      <SelectItem value="5">Highest</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    How important this focus area is for activities.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="flex items-center justify-between gap-4">
-              {deleteButton}
-              <div className="flex items-center gap-4 ml-auto">
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'Saving...' : isEdit ? 'Update' : 'Create'}
-                </Button>
-              </div>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter title" {...field} />
+              </FormControl>
+              <FormDescription>
+                The name of the focus area.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description (Optional)</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="Enter a brief description"
+                  rows={3}
+                  {...field} 
+                />
+              </FormControl>
+              <FormDescription>
+                Additional details about this focus area.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="physical">Physical</SelectItem>
+                  <SelectItem value="educational">Educational</SelectItem>
+                  <SelectItem value="creative">Creative</SelectItem>
+                  <SelectItem value="social">Social</SelectItem>
+                  <SelectItem value="life_skills">Life Skills</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                The type of skills or activities this focus area targets.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="priority"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Priority</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(parseInt(value))}
+                defaultValue={field.value.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="1">Low</SelectItem>
+                  <SelectItem value="2">Medium</SelectItem>
+                  <SelectItem value="3">High</SelectItem>
+                  <SelectItem value="4">Very High</SelectItem>
+                  <SelectItem value="5">Highest</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                How important this focus area is for activities.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <div className="flex items-center justify-between gap-4">
+          {deleteButton}
+          <div className="flex items-center gap-4 ml-auto">
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving...' : isEdit ? 'Update' : 'Create'}
+            </Button>
+          </div>
+        </div>
+      </form>
+    </Form>
   );
 } 

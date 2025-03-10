@@ -1,11 +1,11 @@
 "use client";
 
 import { FamilyMemberCard } from './FamilyMemberCard';
-import { FamilyMemberDetailDialog } from './FamilyMemberDetailDialog';
+import { FamilyMemberDetailDrawer } from './FamilyMemberDetailDrawer';
 import { FocusArea } from '@/lib/db/schema/focus-areas';
 import { Card } from '@/components/ui/card';
 import { PlusCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Define the type for the component props
 interface FamilyMemberListProps {
@@ -27,6 +27,16 @@ interface FamilyMemberListProps {
 export function FamilyMemberList({ members }: FamilyMemberListProps) {
   const [selectedMember, setSelectedMember] = useState<typeof members[0] | undefined>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Keep selectedMember in sync with updated members data
+  useEffect(() => {
+    if (selectedMember) {
+      const updatedMember = members.find(m => m.id === selectedMember.id);
+      if (updatedMember) {
+        setSelectedMember(updatedMember);
+      }
+    }
+  }, [members, selectedMember]);
 
   const handleMemberClick = (member: typeof members[0]) => {
     setSelectedMember(member);
@@ -58,7 +68,7 @@ export function FamilyMemberList({ members }: FamilyMemberListProps) {
         </div>
       </div>
 
-      <FamilyMemberDetailDialog
+      <FamilyMemberDetailDrawer
         member={selectedMember}
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}

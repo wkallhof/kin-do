@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { RefinementPanel } from "./RefinementPanel";
 import { ActivityCard } from "./ActivityCard";
-import { ActivityDetailDialog } from "./ActivityDetailDialog";
+import { ActivityDetailDrawer } from "./ActivityDetailDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { resources, environmentEnum } from "@/lib/db/schema/resources";
 import { familyMembers } from "@/lib/db/schema/families";
@@ -14,16 +14,35 @@ import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { type FocusArea } from "@/lib/db/schema/focus-areas";
 import { type Activity } from "@/app/(authenticated)/activities/types";
+import { differenceInYears, differenceInMonths } from "date-fns";
 
 type Environment = "indoor" | "outdoor" | "both";
 
 interface ClientActivitiesPageProps {
   familyMembers: typeof familyMembers.$inferSelect[];
-  focusAreas: FocusArea[];
+  focusAreas: Array<FocusArea & {
+    familyMemberName: string | null;
+  }>;
   resources: typeof resources.$inferSelect[];
 }
 
 const STORAGE_KEY = 'kindo-generated-activities';
+
+interface Age {
+  years: number;
+  months: number;
+}
+
+function getAge(dateOfBirth: string | null): Age | null {
+  if (!dateOfBirth) return null;
+  const today = new Date();
+  const birthDate = new Date(dateOfBirth);
+  const years = differenceInYears(today, birthDate);
+  const totalMonths = differenceInMonths(today, birthDate);
+  const months = totalMonths % 12;
+  
+  return { years, months };
+}
 
 export function ClientActivitiesPage({
   familyMembers,
@@ -107,12 +126,26 @@ export function ClientActivitiesPage({
     // Get previous activity titles from all current activities
     const previousActivityTitles = storedActivities.map(activity => activity?.title).filter((title): title is string => !!title);
     
+    // Filter focus areas and include family member names
+    const focusAreasWithNames = focusAreas
+      .filter(area => !area.familyMemberId || selectedMembers.includes(area.familyMemberId.toString()))
+      .map(area => ({
+        id: area.id,
+        title: area.title,
+        description: area.description,
+        familyMemberId: area.familyMemberId?.toString() || null,
+        familyMemberName: area.familyMemberName || null
+      }));
+    
     const requestData = {
       environment,
-      selectedMembers: selectedMemberObjects.map(({ id, name, role }) => ({ id, name, role })),
-      focusAreas: focusAreas.filter(area => 
-        !area.familyMemberId || selectedMembers.includes(area.familyMemberId.toString())
-      ),
+      selectedMembers: selectedMemberObjects.map(({ id, name, role, dateOfBirth }) => ({ 
+        id: id.toString(), 
+        name, 
+        role,
+        age: getAge(dateOfBirth)
+      })),
+      focusAreas: focusAreasWithNames,
       resources: resources.filter(resource => 
         environment === "both" || resource.environment === (environment as typeof environmentEnum.enumValues[number])
       ),
@@ -269,7 +302,7 @@ export function ClientActivitiesPage({
         )}
       </div>
 
-      <ActivityDetailDialog
+      <ActivityDetailDrawer
         activity={selectedActivity}
         open={isDetailOpen}
         onOpenChange={setIsDetailOpen}

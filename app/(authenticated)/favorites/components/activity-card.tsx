@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Heart } from "lucide-react";
+import { Heart, Home, Trees } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { type Activity } from "@/app/(authenticated)/activities/types";
 import { Badge } from "@/components/ui/badge";
@@ -84,9 +84,22 @@ export function ActivityCard({
       </CardContent>
       <CardFooter className="flex justify-between text-xs text-muted-foreground pt-0">
         {environment && (
-          <Badge variant={environment === "indoor" ? "default" : "secondary"} className="text-xs">
-            {environment === "indoor" ? "Indoor" : environment === "outdoor" ? "Outdoor" : "Both"}
-          </Badge>
+          <div className={cn(
+            "rounded-full p-1.5",
+            environment === "indoor" ? "bg-blue-100" : 
+            environment === "outdoor" ? "bg-green-100" : "bg-purple-100"
+          )}>
+            {environment === "indoor" ? (
+              <Home className="h-4 w-4 text-blue-500" />
+            ) : environment === "outdoor" ? (
+              <Trees className="h-4 w-4 text-green-500" />
+            ) : (
+              <div className="flex gap-1">
+                <Home className="h-4 w-4 text-purple-500" />
+                <Trees className="h-4 w-4 text-purple-500" />
+              </div>
+            )}
+          </div>
         )}
         {(requiredResources?.length ?? 0) > 0 && (
           <div className="text-xs">

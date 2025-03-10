@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollDrawer } from "@/components/scroll-drawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FamilyMemberForm } from './FamilyMemberForm';
 import { FocusAreaList } from './FocusAreaList';
@@ -19,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 
-interface FamilyMemberDetailDialogProps {
+interface FamilyMemberDetailDrawerProps {
   member?: {
     id: number;
     name: string;
@@ -37,11 +30,11 @@ interface FamilyMemberDetailDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function FamilyMemberDetailDialog({
+export function FamilyMemberDetailDrawer({
   member,
   open,
   onOpenChange,
-}: FamilyMemberDetailDialogProps) {
+}: FamilyMemberDetailDrawerProps) {
   const router = useRouter();
   const isEdit = !!member;
 
@@ -92,65 +85,53 @@ export function FamilyMemberDetailDialog({
   ) : null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="bottom"
-        className="h-[90vh] rounded-t-[10px] border-t-0 max-w-4xl mx-auto pt-6 flex flex-col overflow-hidden"
-      >
-        <SheetHeader>
-          <SheetTitle className="text-2xl font-bold">
-            {isEdit ? `Edit ${member.name}` : 'Add Family Member'}
-          </SheetTitle>
-          <SheetDescription>
-            {isEdit 
-              ? `Update ${member.name}'s details and focus areas`
-              : 'Add a new member to your family'}
-          </SheetDescription>
-        </SheetHeader>
-
-        <ScrollArea className="flex-1 mt-4 h-[calc(90vh-100px)] overflow-y-auto">
-          {isEdit ? (
-            <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="details">Details</TabsTrigger>
-                <TabsTrigger value="focus-areas">Focus Areas</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="details">
-                <Suspense fallback={<div>Loading...</div>}>
-                  <FamilyMemberForm 
-                    familyMemberId={member.id}
-                    initialData={{
-                      name: member.name,
-                      role: member.role as 'primary_guardian' | 'secondary_guardian' | 'child',
-                      dateOfBirth: member.dateOfBirth ? new Date(member.dateOfBirth) : undefined,
-                      bio: member.bio || '',
-                      avatar: member.avatar || '',
-                    }}
-                    isEdit
-                    deleteButton={DeleteButton}
-                  />
-                </Suspense>
-              </TabsContent>
-              
-              <TabsContent value="focus-areas">
-                <Suspense fallback={<div>Loading focus areas...</div>}>
-                    <FocusAreaList 
-                    familyId={member.familyId!}
-                    memberId={member.id}
-                    focusAreas={member.focusAreas}
-                    vertical={true}
-                    />
-                </Suspense>
-              </TabsContent>
-            </Tabs>
-          ) : (
+    <ScrollDrawer
+      title={isEdit ? `Edit ${member.name}` : 'Add Family Member'}
+      description={isEdit 
+        ? `Update ${member.name}'s details and focus areas`
+        : 'Add a new member to your family'}
+      open={open}
+      onOpenChange={onOpenChange}
+    >
+      {isEdit ? (
+        <Tabs defaultValue="details" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="focus-areas">Focus Areas</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="details">
             <Suspense fallback={<div>Loading...</div>}>
-              <FamilyMemberForm />
+              <FamilyMemberForm 
+                familyMemberId={member.id}
+                initialData={{
+                  name: member.name,
+                  role: member.role as 'primary_guardian' | 'secondary_guardian' | 'child',
+                  dateOfBirth: member.dateOfBirth ? new Date(member.dateOfBirth) : undefined,
+                  bio: member.bio || '',
+                  avatar: member.avatar || '',
+                }}
+                isEdit
+                deleteButton={DeleteButton}
+              />
             </Suspense>
-          )}
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+          </TabsContent>
+          
+          <TabsContent value="focus-areas">
+            <Suspense fallback={<div>Loading focus areas...</div>}>
+              <FocusAreaList 
+                familyId={member.familyId!}
+                memberId={member.id}
+                focusAreas={member.focusAreas}
+              />
+            </Suspense>
+          </TabsContent>
+        </Tabs>
+      ) : (
+        <Suspense fallback={<div>Loading...</div>}>
+          <FamilyMemberForm />
+        </Suspense>
+      )}
+    </ScrollDrawer>
   );
 } 

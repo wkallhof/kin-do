@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollDrawer } from '@/components/scroll-drawer';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Suspense } from 'react';
@@ -15,7 +8,7 @@ import { FocusAreaForm } from './FocusAreaForm';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-interface FocusAreaDetailDialogProps {
+interface FocusAreaDetailDrawerProps {
   area?: {
     id: number;
     title: string;
@@ -31,13 +24,13 @@ interface FocusAreaDetailDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function FocusAreaDetailDialog({
+export function FocusAreaDetailDrawer({
   area,
   familyId,
   familyMemberId,
   open,
   onOpenChange,
-}: FocusAreaDetailDialogProps) {
+}: FocusAreaDetailDrawerProps) {
   const router = useRouter();
   const isEdit = !!area;
 
@@ -86,43 +79,32 @@ export function FocusAreaDetailDialog({
   ) : null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="bottom"
-        className="h-[90vh] rounded-t-[10px] border-t-0 max-w-4xl mx-auto pt-6 flex flex-col overflow-hidden"
-      >
-        <SheetHeader>
-          <SheetTitle className="text-2xl font-bold">
-            {isEdit ? `Edit Focus Area` : 'Add Focus Area'}
-          </SheetTitle>
-          <SheetDescription>
-            {isEdit 
-              ? `Update Focus Area details`
-              : familyMemberId 
-                ? 'Add a new focus area specific to this family member'
-                : 'Add a new focus area that applies to the entire family'}
-          </SheetDescription>
-        </SheetHeader>
-
-        <ScrollArea className="flex-1 mt-4 h-[calc(90vh-100px)] overflow-y-auto">
-          <Suspense fallback={<div>Loading...</div>}>
-            <FocusAreaForm 
-              focusAreaId={area?.id}
-              familyId={familyId}
-              familyMemberId={familyMemberId}
-              initialData={area ? {
-                title: area.title,
-                description: area.description || '',
-                category: area.category,
-                priority: area.priority === null ? 1 : area.priority,
-              } : undefined}
-              isEdit={isEdit}
-              deleteButton={DeleteButton}
-              onSuccess={() => onOpenChange(false)}
-            />
-          </Suspense>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <ScrollDrawer
+      title={isEdit ? 'Edit Focus Area' : 'Add Focus Area'}
+      description={isEdit 
+        ? 'Update Focus Area details'
+        : familyMemberId 
+          ? 'Add a new focus area specific to this family member'
+          : 'Add a new focus area that applies to the entire family'}
+      open={open}
+      onOpenChange={onOpenChange}
+    >
+      <Suspense fallback={<div>Loading...</div>}>
+        <FocusAreaForm 
+          focusAreaId={area?.id}
+          familyId={familyId}
+          familyMemberId={familyMemberId}
+          initialData={area ? {
+            title: area.title,
+            description: area.description || '',
+            category: area.category,
+            priority: area.priority === null ? 1 : area.priority,
+          } : undefined}
+          isEdit={isEdit}
+          deleteButton={DeleteButton}
+          onSuccess={() => onOpenChange(false)}
+        />
+      </Suspense>
+    </ScrollDrawer>
   );
 } 

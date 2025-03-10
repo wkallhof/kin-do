@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 import { CalendarIcon, ChevronDown } from 'lucide-react';
@@ -167,171 +166,167 @@ export function FamilyMemberForm({
   };
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter name" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    The name of the family member.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="primary_guardian">Primary Guardian</SelectItem>
-                      <SelectItem value="secondary_guardian">Secondary Guardian</SelectItem>
-                      <SelectItem value="child">Child</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    The role of this person in the family.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="dateOfBirth"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Date of Birth</FormLabel>
-                  <div className="flex gap-2">
-                    <FormControl>
-                      <Input
-                        type="date"
-                        value={dateInputValue}
-                        onChange={handleDateInputChange}
-                        placeholder="YYYY-MM-DD"
-                        className="w-full"
-                      />
-                    </FormControl>
-                    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          type="button"
-                          className="px-2"
-                          onClick={() => setCalendarOpen(true)}
-                        >
-                          <CalendarIcon className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="end">
-                        <div className="flex justify-between items-center p-2 border-b">
-                          <div className="text-sm font-medium">Select Date</div>
-                          <Popover open={yearSelectOpen} onOpenChange={setYearSelectOpen}>
-                            <PopoverTrigger asChild>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter name" {...field} />
+              </FormControl>
+              <FormDescription>
+                The name of the family member.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="primary_guardian">Primary Guardian</SelectItem>
+                  <SelectItem value="secondary_guardian">Secondary Guardian</SelectItem>
+                  <SelectItem value="child">Child</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                The role of this person in the family.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="dateOfBirth"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Date of Birth</FormLabel>
+              <div className="flex gap-2">
+                <FormControl>
+                  <Input
+                    type="date"
+                    value={dateInputValue}
+                    onChange={handleDateInputChange}
+                    placeholder="YYYY-MM-DD"
+                    className="w-full"
+                  />
+                </FormControl>
+                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className="px-2"
+                      onClick={() => setCalendarOpen(true)}
+                    >
+                      <CalendarIcon className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="end">
+                    <div className="flex justify-between items-center p-2 border-b">
+                      <div className="text-sm font-medium">Select Date</div>
+                      <Popover open={yearSelectOpen} onOpenChange={setYearSelectOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs gap-1"
+                          >
+                            {field.value ? field.value.getFullYear() : new Date().getFullYear()}
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <div className="h-[200px] overflow-y-auto p-1">
+                            {years.map((year) => (
                               <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8 text-xs gap-1"
+                                key={year}
+                                variant="ghost"
+                                className="w-full justify-start text-left font-normal"
+                                onClick={() => handleYearSelect(year)}
                               >
-                                {field.value ? field.value.getFullYear() : new Date().getFullYear()}
-                                <ChevronDown className="h-3 w-3" />
+                                {year}
                               </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <div className="h-[200px] overflow-y-auto p-1">
-                                {years.map((year) => (
-                                  <Button
-                                    key={year}
-                                    variant="ghost"
-                                    className="w-full justify-start text-left font-normal"
-                                    onClick={() => handleYearSelect(year)}
-                                  >
-                                    {year}
-                                  </Button>
-                                ))}
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={(date) => {
-                            field.onChange(date);
-                            if (date) {
-                              setDateInputValue(format(date, 'yyyy-MM-dd'));
-                            }
-                            setCalendarOpen(false);
-                          }}
-                          disabled={(date: Date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <FormDescription>
-                    The date of birth of this family member.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="bio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bio</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Enter details about this family member, such as interests, personality, etc." 
-                      className="min-h-[120px]" 
-                      {...field} 
+                            ))}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={(date) => {
+                        field.onChange(date);
+                        if (date) {
+                          setDateInputValue(format(date, 'yyyy-MM-dd'));
+                        }
+                        setCalendarOpen(false);
+                      }}
+                      disabled={(date: Date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
                     />
-                  </FormControl>
-                  <FormDescription>
-                    Additional information about this family member.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="flex items-center justify-between gap-4">
-              {deleteButton}
-              <div className="flex items-center gap-4 ml-auto">
-                <Button type="submit" disabled={isPending}>
-                  {isPending ? 'Saving...' : isEdit ? 'Update' : 'Create'}
-                </Button>
+                  </PopoverContent>
+                </Popover>
               </div>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              <FormDescription>
+                The date of birth of this family member.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bio</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="Enter details about this family member, such as interests, personality, etc." 
+                  className="min-h-[120px]" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormDescription>
+                Additional information about this family member.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <div className="flex items-center justify-between gap-4">
+          {deleteButton}
+          <div className="flex items-center gap-4 ml-auto">
+            <Button type="submit" disabled={isPending}>
+              {isPending ? 'Saving...' : isEdit ? 'Update' : 'Create'}
+            </Button>
+          </div>
+        </div>
+      </form>
+    </Form>
   );
 } 

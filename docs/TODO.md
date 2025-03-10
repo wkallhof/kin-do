@@ -7,8 +7,13 @@
 - [x] Implement Favorites functionality. Create better CTA to it from the Activities page
 - [x] Standardize page headers 
 - [ ] Standardize containers
-- [ ] Store activities in local storage for Today's activities
+- [x] Store activities in local storage for Today's activities
 - [x] Clean up Family Cards
 - [x] Move Indoor / Outdoor indicator on activity card to bottom row
-- [ ] Fix bug with double loading / API calls to get activities
-- [ ] Implement progressive web app
+- [x] Fix bug with double loading / API calls to get activities
+- [x] Implement progressive web app
+- [ ] Implement client-side loading containers vs server side rendered data to make app feel more app like
+- [ ] Update Profile screen to be a list of sections. Include the app build number at the bottom
+- [ ] Create color theme
+- [ ] Add transitions and motion design
+- [ ]
