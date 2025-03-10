@@ -106,7 +106,6 @@ export default async function FamilyPage() {
                 <FocusAreaList 
                     familyId={userFamilyMember.familyId} 
                     focusAreas={familyFocusAreas}
-                    vertical={true}
                 />
             </Suspense>
         </TabsContent>
