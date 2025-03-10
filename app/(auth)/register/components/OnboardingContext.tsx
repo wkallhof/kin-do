@@ -12,13 +12,17 @@ interface FamilyMember {
 
 interface OnboardingState {
   step: OnboardingStep;
+  joiningExistingFamily: boolean;
   familyData: {
     familyName: string;
     primaryGuardian: {
       name: string;
       role: "primary_guardian" | "secondary_guardian";
+      dateOfBirth?: Date;
     };
     additionalMembers: FamilyMember[];
+    inviteCode?: string;
+    familyMemberId?: number;
   };
   locationData: {
     home: {
@@ -31,6 +35,7 @@ interface OnboardingState {
 
 const initialState: OnboardingState = {
   step: "family",
+  joiningExistingFamily: false,
   familyData: {
     familyName: "",
     primaryGuardian: {
@@ -53,6 +58,7 @@ interface OnboardingContextType {
   setStep: (step: OnboardingStep) => void;
   updateFamilyData: (data: Partial<OnboardingState["familyData"]>) => void;
   updateLocationData: (data: Partial<OnboardingState["locationData"]>) => void;
+  setJoiningExistingFamily: (value: boolean) => void;
   resetOnboarding: () => void;
 }
 
@@ -87,6 +93,13 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
     }));
   };
 
+  const setJoiningExistingFamily = (value: boolean) => {
+    setState((prev) => ({
+      ...prev,
+      joiningExistingFamily: value,
+    }));
+  };
+
   const resetOnboarding = () => {
     setState(initialState);
     localStorage.removeItem("onboarding");
@@ -99,6 +112,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
         setStep,
         updateFamilyData,
         updateLocationData,
+        setJoiningExistingFamily,
         resetOnboarding,
       }}
     >

@@ -70,7 +70,11 @@ export function AccountStep() {
         throw new Error(result.error || "Failed to complete registration");
       }
 
-      toast.success("Account created successfully!", {
+      const message = state.joiningExistingFamily 
+        ? "You've successfully joined the family!" 
+        : "Account created successfully!";
+        
+      toast.success(message, {
         description: "Welcome to Kin•Do. Let's get started!",
       });
 
@@ -89,12 +93,22 @@ export function AccountStep() {
     }
   }
 
+  // Get the role for display
+  const getDisplayRole = (role: string) => {
+    return role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold">Create Your Account</h2>
+        <h2 className="text-lg font-semibold">
+          {state.joiningExistingFamily ? "Join Family" : "Create Your Account"}
+        </h2>
         <p className="text-sm text-muted-foreground">
-          Last step! Set up your login credentials to get started.
+          {state.joiningExistingFamily 
+            ? `You're joining the ${state.familyData.familyName} family as ${getDisplayRole(state.familyData.primaryGuardian.role)}.`
+            : "Last step! Set up your login credentials to get started."
+          }
         </p>
       </div>
 
@@ -107,26 +121,32 @@ export function AccountStep() {
                 <p className="text-sm font-medium">Family Name</p>
                 <p className="text-sm">{state.familyData.familyName}</p>
               </div>
+              {state.joiningExistingFamily && state.familyData.inviteCode && (
+                <div>
+                  <p className="text-sm font-medium">Invite Code</p>
+                  <p className="text-sm">{state.familyData.inviteCode}</p>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-2 mt-2">
                 <div>
-                  <p className="text-sm font-medium">Primary Guardian</p>
+                  <p className="text-sm font-medium">Your Name</p>
                   <p className="text-sm">{state.familyData.primaryGuardian.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Role</p>
+                  <p className="text-sm font-medium">Your Role</p>
                   <p className="text-sm capitalize">
-                    {state.familyData.primaryGuardian.role.replace('_', ' ')}
+                    {getDisplayRole(state.familyData.primaryGuardian.role)}
                   </p>
                 </div>
               </div>
               
-              {state.familyData.additionalMembers && state.familyData.additionalMembers.length > 0 && (
+              {!state.joiningExistingFamily && state.familyData.additionalMembers && state.familyData.additionalMembers.length > 0 && (
                 <div>
                   <p className="text-sm font-medium mt-2">Additional Family Members</p>
                   <ul className="text-sm list-disc pl-5 mt-1">
                     {state.familyData.additionalMembers.map((member, index) => (
                       <li key={index}>
-                        {member.name} ({member.role}
+                        {member.name} ({member.role.replace('_', ' ')}
                         {member.dateOfBirth ? `, ${format(new Date(member.dateOfBirth), 'MMMM d, yyyy')}` : ''})
                       </li>
                     ))}
@@ -135,6 +155,16 @@ export function AccountStep() {
               )}
             </div>
           </div>
+          
+          {!state.joiningExistingFamily && (
+            <div className="rounded-lg border p-4">
+              <h3 className="text-md font-medium mb-2">Location Information</h3>
+              <div>
+                <p className="text-sm font-medium">Home</p>
+                <p className="text-sm">{state.locationData.home.name}</p>
+              </div>
+            </div>
+          )}
           
           <div className="rounded-lg border p-4">
             <h3 className="text-md font-medium mb-2">Account Information</h3>
@@ -165,7 +195,9 @@ export function AccountStep() {
               onClick={form.handleSubmit(onSubmit)}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Creating Account..." : "Confirm & Create Account"}
+              {isSubmitting 
+                ? (state.joiningExistingFamily ? "Joining Family..." : "Creating Account...") 
+                : (state.joiningExistingFamily ? "Join Family" : "Create Account")}
             </Button>
           </div>
         </div>
@@ -232,7 +264,7 @@ export function AccountStep() {
             />
 
             <Button type="submit" className="w-full">
-              Continue
+              {state.joiningExistingFamily ? "Continue to Join Family" : "Continue"}
             </Button>
           </form>
         </Form>

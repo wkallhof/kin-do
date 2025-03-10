@@ -16,4 +16,5 @@
 - [ ] Update Profile screen to be a list of sections. Include the app build number at the bottom
 - [ ] Create color theme
 - [ ] Add transitions and motion design
-- [ ]
+- [x] Fix login process (welcome screen showing even if logged in, etc.)
+- [x] Implement invite process

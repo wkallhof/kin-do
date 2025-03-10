@@ -1,13 +1,21 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Welcome to Kin•Do",
   description: "Your family's AI-powered daily activity planner",
 };
 
-export default function WelcomePage() {
+export default async function WelcomePage() {
+  const user = await getCurrentUser();
+  
+  if (user) {
+    redirect("/activities");
+  }
+
   return (
     <div className="container relative flex min-h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white md:flex lg:h-full dark:border-r">

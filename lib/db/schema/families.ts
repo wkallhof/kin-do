@@ -3,9 +3,20 @@ import { relations } from 'drizzle-orm';
 import { users } from './users';
 import { resources } from './resources';
 
+// Function to generate a random 6-character alphanumeric (all caps) invite code
+export function generateInviteCode(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 export const families = pgTable('families', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
+  inviteCode: text('invite_code').notNull().unique(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

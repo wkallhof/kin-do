@@ -3,12 +3,13 @@ import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { eq, and, isNull } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { users, familyMembers, focusAreas } from '@/lib/db/schema';
+import { users, familyMembers, focusAreas, families } from '@/lib/db/schema';
 import { Metadata } from 'next';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FamilyMemberList } from './components/FamilyMemberList';
 import { FocusAreaList } from './components/FocusAreaList';
 import { PageHeader } from '@/app/(authenticated)/components/page-header';
+import { FamilyInviteSection } from './components/FamilyInviteSection';
 
 export const metadata: Metadata = {
   title: 'Family | Kin•Do',
@@ -53,6 +54,11 @@ export default async function FamilyPage() {
     );
   }
   
+  // Get the family record to access the invite code
+  const familyRecord = await db.query.families.findFirst({
+    where: eq(families.id, userFamilyMember.familyId),
+  });
+  
   // Get all family members for this family, including those with null userId (children)
   const members = await db.query.familyMembers.findMany({
     where: eq(familyMembers.familyId, userFamilyMember.familyId),
@@ -96,6 +102,11 @@ export default async function FamilyPage() {
         </TabsList>
         
         <TabsContent value="members">
+          {familyRecord && familyRecord.inviteCode && (
+            <div className="mb-6">
+              <FamilyInviteSection inviteCode={familyRecord.inviteCode} />
+            </div>
+          )}
           <Suspense fallback={<p>Loading family members...</p>}>
             <FamilyMemberList members={membersWithFocusAreas} />
           </Suspense>
