@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
-import { users, families, familyMembers } from '@/lib/db/schema';
+import { users, families, familyMembers, generateInviteCode } from '@/lib/db/schema';
 import { auth } from '@/lib/auth';
 import { eq } from 'drizzle-orm';
 
@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
     // Create a new family
     const newFamily = await db.insert(families).values({
       name: validatedData.familyName,
+      inviteCode: generateInviteCode(),
       createdAt: new Date(),
       updatedAt: new Date(),
     }).returning();

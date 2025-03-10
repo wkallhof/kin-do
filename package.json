@@ -9,7 +9,6 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:push-ci": "drizzle-kit push --force",
     "db:studio": "drizzle-kit studio",
     "test": "playwright test",
     "test:ui": "playwright test --ui",

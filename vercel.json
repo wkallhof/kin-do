@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run db:push-ci && next build",
+  "buildCommand": "npm run db:push && next build",
   "installCommand": "npm ci --prefer-offline --no-audit",
   "cleanUrls": true,
   "functions": {

@@ -1,0 +1,1 @@
+ALTER TABLE "families" ALTER COLUMN "invite_code" SET NOT NULL;
