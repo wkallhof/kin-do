@@ -12,6 +12,7 @@ interface RequestBody {
   selectedMembers: typeof familyMembers.$inferSelect[];
   focusAreas: FocusArea[];
   resources: typeof resources.$inferSelect[];
+  previousActivityTitles: string[];
 }
 
 // Allow streaming responses up to 30 seconds
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
     //console.log(requestData);
     
     // Validate the request data
-    const { environment, selectedMembers, focusAreas, resources } = requestData as RequestBody;
+    const { environment, selectedMembers, focusAreas, resources, previousActivityTitles = [] } = requestData as RequestBody;
     
     if (!environment || !selectedMembers || !Array.isArray(selectedMembers) || selectedMembers.length === 0) {
         console.log("Missing required fields in request");
@@ -49,11 +50,18 @@ export async function POST(req: NextRequest) {
       schema: activitySchema,
       output: 'array',
       prompt: `
-        Generate 3 family activities based on the following criteria:
+        Generate 3 unique and creative family activities based on the following criteria:
         - Environment: ${environment}
         - Family members: ${selectedMembers.map(member => member?.name).filter(Boolean).join(", ")}
         - Focus areas: ${focusAreas.map(area => area.title).join(", ")}
         - Available resources: ${resources.map(resource => resource.name).join(", ")}
+        
+        ${previousActivityTitles.length > 0 ? `
+        Please avoid generating activities similar to these recently generated ones:
+        ${previousActivityTitles.join(", ")}
+        
+        Focus on creating entirely new and different activities.
+        ` : ''}
         
         Each activity should include:
         - A title

@@ -66,7 +66,7 @@ export function ResourceList({ environment }: ResourceListProps) {
       if (!response.ok) throw new Error('Failed to add resource');
       
       const newResource = await response.json();
-      setResources([...resources, newResource]);
+      setResources([newResource, ...resources]); // Add new resource at the top
       setNewResourceName('');
       toast.success('Resource added successfully');
       router.refresh();
@@ -150,9 +150,9 @@ export function ResourceList({ environment }: ResourceListProps) {
           value={newResourceName}
           onChange={(e) => setNewResourceName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleAddResource()}
-          className="flex-1"
+          className="flex-1 h-12 py-2"
         />
-        <Button onClick={handleAddResource} size="icon">
+        <Button onClick={handleAddResource} size="icon" className="h-12 w-12">
           <Plus className="h-4 w-4" />
         </Button>
       </div>

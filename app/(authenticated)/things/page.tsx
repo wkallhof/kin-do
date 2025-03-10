@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { ResourceList } from './components/resource-list';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageHeader } from '@/app/(authenticated)/components/page-header';
 
 export const metadata: Metadata = {
@@ -22,31 +21,19 @@ export default function ThingsPage() {
           <TabsTrigger value="indoor">Indoor</TabsTrigger>
           <TabsTrigger value="outdoor">Outdoor</TabsTrigger>
         </TabsList>
-        <TabsContent value="indoor" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Indoor Resources</CardTitle>
-              <CardDescription>
-                Manage your indoor resources like toys, art supplies, and furniture
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResourceList environment="indoor" />
-            </CardContent>
-          </Card>
+        <TabsContent value="indoor" className="mt-6 space-y-4">
+            <h3 className="text-2xl font-semibold">Indoor</h3>
+            <p className="text-muted-foreground">
+              Manage your indoor resources like toys, art supplies, and furniture
+            </p>
+          <ResourceList environment="indoor" />
         </TabsContent>
-        <TabsContent value="outdoor" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Outdoor Resources</CardTitle>
-              <CardDescription>
-                Manage your outdoor resources like playground equipment, sports equipment, and garden tools
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResourceList environment="outdoor" />
-            </CardContent>
-          </Card>
+        <TabsContent value="outdoor" className="mt-6 space-y-4">
+            <h3 className="text-2xl font-semibold">Outdoor</h3>
+            <p className="text-muted-foreground">
+              Manage your outdoor resources like playground equipment, sports equipment, and garden tools
+            </p>
+          <ResourceList environment="outdoor" />
         </TabsContent>
       </Tabs>
     </main>

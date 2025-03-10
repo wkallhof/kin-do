@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db } from '@/lib/db';
 import { resources, familyMembers, users } from '@/lib/db/schema';
 import { auth } from '@/lib/auth';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 
 // Validation schema
 const resourceCreateSchema = z.object({
@@ -71,14 +71,16 @@ export async function GET(request: NextRequest) {
             eq(resources.familyId, currentUserFamilyMember.familyId),
             eq(resources.environment, environment)
           )
-        );
+        )
+        .orderBy(desc(resources.createdAt));
       
       return NextResponse.json(resourcesList);
     } else {
       // If no environment filter
       const resourcesList = await db.select()
         .from(resources)
-        .where(eq(resources.familyId, currentUserFamilyMember.familyId));
+        .where(eq(resources.familyId, currentUserFamilyMember.familyId))
+        .orderBy(desc(resources.createdAt));
       
       return NextResponse.json(resourcesList);
     }

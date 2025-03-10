@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RefinementPanel } from "./RefinementPanel";
 import { ActivityCard } from "./ActivityCard";
 import { ActivityDetailDialog } from "./ActivityDetailDialog";
@@ -23,6 +23,8 @@ interface ClientActivitiesPageProps {
   resources: typeof resources.$inferSelect[];
 }
 
+const STORAGE_KEY = 'kindo-generated-activities';
+
 export function ClientActivitiesPage({
   familyMembers,
   focusAreas,
@@ -33,13 +35,66 @@ export function ClientActivitiesPage({
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [favorites, setFavorites] = useState<Array<{ id: number; activityData: Activity }>>([]);
+  const [storedActivities, setStoredActivities] = useState<z.infer<typeof activitySchema>[]>([]);
 
   const { object, isLoading, error, submit, stop } = useObject({
     api: '/api/activities-generation',
     schema: z.array(activitySchema),
   });
 
-  const handleGenerateActivities = () => {
+  // Load activities from local storage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsedActivities = JSON.parse(stored);
+      setStoredActivities(parsedActivities);
+    }
+  }, []);
+
+  // Save activities to local storage whenever new ones are generated
+  useEffect(() => {
+    if (object && object.length > 0) {
+      // When new activities are generated, append them to existing ones
+      const validActivities = object.filter((activity): activity is Activity => 
+        activity !== undefined && 
+        activity !== null &&
+        typeof activity === 'object' &&
+        'title' in activity
+      );
+      
+      if (validActivities.length > 0) {
+        // Filter out any activities that already exist in storedActivities
+        const newActivities = validActivities.filter(
+          newActivity => !storedActivities.some(
+            existingActivity => existingActivity.title === newActivity.title
+          )
+        );
+
+        if (newActivities.length > 0) {
+          const updatedActivities = [...storedActivities, ...newActivities];
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedActivities));
+          setStoredActivities(updatedActivities);
+        }
+      }
+    }
+  }, [object, storedActivities]);
+
+  // Combine stored and newly generated activities for display
+  const displayedActivities = storedActivities;
+
+  // Calculate how many skeletons to show based on current loading state
+  const getSkeletonCount = () => {
+    if (!isLoading) return 0;
+    // If object exists, show remaining loaders (3 - loaded items)
+    if (object) {
+      const remainingLoaders = 3 - object.length;
+      return Math.max(0, remainingLoaders);
+    }
+    // If no object yet, show all 3 loaders
+    return 3;
+  };
+
+  const generateActivities = () => {
     const selectedMemberObjects = selectedMembers
       .map(id => familyMembers.find(m => m.id.toString() === id))
       .filter((member): member is NonNullable<typeof member> => member !== undefined);
@@ -48,6 +103,9 @@ export function ClientActivitiesPage({
       toast.error('Please select at least one family member');
       return;
     }
+
+    // Get previous activity titles from all current activities
+    const previousActivityTitles = storedActivities.map(activity => activity?.title).filter((title): title is string => !!title);
     
     const requestData = {
       environment,
@@ -58,11 +116,21 @@ export function ClientActivitiesPage({
       resources: resources.filter(resource => 
         environment === "both" || resource.environment === (environment as typeof environmentEnum.enumValues[number])
       ),
+      previousActivityTitles,
     };
 
     submit(requestData);
   };
-  
+
+  const handleGenerateActivities = () => {
+    setStoredActivities([]); // Clear existing activities when generating new ones
+    generateActivities();
+  };
+
+  const handleGenerateMore = () => {
+    generateActivities();
+  };
+
   const handleSelectActivity = (activity: Activity) => {
     setSelectedActivity(activity);
     setIsDetailOpen(true);
@@ -152,28 +220,26 @@ export function ClientActivitiesPage({
         )}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Render existing activities as they stream in */}
-        {object?.map((activity, index) => (
-          activity && (
-            <ActivityCard
-              key={`${activity.title}-${index}`}
-              activity={activity as Activity}
-              onSelect={handleSelectActivity}
-            />
-          )
-        ))}
+      <div className="space-y-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {/* Render activities using the combined displayedActivities */}
+          {displayedActivities?.map((activity, index) => (
+            activity && (
+              <ActivityCard
+                key={`${activity.title}-${index}`}
+                activity={activity as Activity}
+                onSelect={handleSelectActivity}
+              />
+            )
+          ))}
 
-        {/* Show skeletons for remaining activities while loading */}
-        {isLoading && Array.from({ length: 3 - (object?.length || 0) }).map((_, i) => (
-          <div key={`skeleton-${i}`} className="space-y-4">
-            <Skeleton className="h-[200px] w-full rounded-lg" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
+          {/* Show skeletons for remaining activities while loading */}
+          {Array.from({ length: getSkeletonCount() }).map((_, i) => (
+            <div key={`skeleton-${i}`} className="space-y-4">
+              <Skeleton className="h-[200px] w-full rounded-lg" />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
         {/* Show error state if there's an error */}
         {error && (
@@ -183,9 +249,22 @@ export function ClientActivitiesPage({
         )}
 
         {/* Show empty state when no activities and not loading */}
-        {!isLoading && !error && (!object || object.length === 0) && (
+        {!isLoading && !error && (!displayedActivities || displayedActivities.length === 0) && (
           <div className="col-span-full p-4 text-center text-muted-foreground">
             Click the button above to generate activities.
+          </div>
+        )}
+
+        {/* Generate More button */}
+        {!isLoading && displayedActivities && displayedActivities.length > 0 && (
+          <div className="flex justify-center">
+            <Button
+              onClick={handleGenerateMore}
+              variant="outline"
+              className="w-full max-w-sm"
+            >
+              Generate More Activities
+            </Button>
           </div>
         )}
       </div>
