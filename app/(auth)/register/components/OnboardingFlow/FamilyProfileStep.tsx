@@ -53,6 +53,15 @@ const joinFamilySchema = z.object({
   memberOption: z.string({ required_error: "Please select an option" }),
   name: z.string().min(2, "Name must be at least 2 characters").optional(),
   role: z.enum(["primary_guardian", "secondary_guardian", "other_relative"]).optional(),
+}).refine((data) => {
+  // Only require name and role when adding a new member
+  if (data.memberOption === "new") {
+    return !!data.name && !!data.role;
+  }
+  return true;
+}, {
+  message: "Name and role are required when adding a new member",
+  path: ["name"] // Show error on the name field
 });
 
 type JoinFamilyValues = z.infer<typeof joinFamilySchema>;
@@ -625,8 +634,8 @@ export function FamilyProfileStep() {
                       type="submit" 
                       className="w-full"
                       disabled={
-                        !joinFamilyForm.formState.isValid || 
-                        (newMemberFormVisible && (!joinFamilyForm.getValues().name || !joinFamilyForm.getValues().role))
+                        !joinFamilyForm.formState.isValid ||
+                        !joinFamilyForm.getValues().memberOption
                       }
                     >
                       Continue

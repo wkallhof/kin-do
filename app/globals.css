@@ -34,23 +34,7 @@
     --ring: 240 10% 3.9%;
     --radius: 0.5rem;
 
-    /* Activity card theme colors - only applied when theme-vibrant class is used */
-    --indoor-bg: 0 0% 100%;
-    --indoor-border: 210 50% 90%;
-    --indoor-text: 210 50% 40%;
-    
-    --outdoor-bg: 0 0% 100%;
-    --outdoor-border: 120 40% 90%;
-    --outdoor-text: 120 40% 40%;
-    
-    --both-bg: 0 0% 100%;
-    --both-border: 270 40% 90%;
-    --both-text: 270 40% 40%;
-  }
-
-  /* Apply vibrant versions of the theme colors when the theme-vibrant class is added */
-  :root.theme-vibrant {
-    /* Activity card theme colors - vibrant versions */
+    /* Activity card theme colors */
     --indoor-bg: 210 90% 95%;
     --indoor-border: 210 90% 75%;
     --indoor-text: 210 90% 30%;
@@ -90,23 +74,7 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Activity card theme colors - dark mode subtle versions */
-    --indoor-bg: 240 10% 3.9%;
-    --indoor-border: 210 40% 30%;
-    --indoor-text: 210 40% 85%;
-    
-    --outdoor-bg: 240 10% 3.9%;
-    --outdoor-border: 120 30% 30%;
-    --outdoor-text: 120 40% 85%;
-    
-    --both-bg: 240 10% 3.9%;
-    --both-border: 270 30% 30%;
-    --both-text: 270 40% 85%;
-  }
-
-  /* Dark mode vibrant theme */
-  .dark.theme-vibrant {
-    /* Activity card theme colors for dark mode - vibrant versions */
+    /* Activity card theme colors - dark mode */
     --indoor-bg: 210 70% 15%;
     --indoor-border: 210 70% 35%;
     --indoor-text: 210 80% 75%;

@@ -9,8 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Moon, Sun, Palette } from "lucide-react";
-import Link from "next/link";
+import { Moon, Sun, Computer } from "lucide-react";
 
 export function ThemeToggle() {
   const { setTheme } = useTheme();
@@ -50,13 +49,8 @@ export function ThemeToggle() {
           <span>Dark</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
+          <Computer className="mr-2 h-4 w-4" />
           <span>System</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/profile/appearance">
-            <Palette className="mr-2 h-4 w-4" />
-            <span>Appearance Settings</span>
-          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
