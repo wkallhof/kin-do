@@ -23,6 +23,30 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Script to initialize theme preferences before page renders to avoid flicker */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                // Check for vibrant mode preference
+                const vibrantMode = localStorage.getItem('kindo-vibrant-mode');
+                if (vibrantMode === 'true') {
+                  document.documentElement.classList.add('theme-vibrant');
+                } else if (vibrantMode === 'false') {
+                  document.documentElement.classList.remove('theme-vibrant');
+                } else {
+                  // Default to vibrant mode for new users
+                  document.documentElement.classList.add('theme-vibrant');
+                }
+              } catch (e) {
+                // If localStorage is not available, default to vibrant mode
+                document.documentElement.classList.add('theme-vibrant');
+              }
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}

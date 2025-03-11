@@ -7,7 +7,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import { LogOut, Bell, CreditCard, User, FileText, HelpCircle, Users, ChevronRight } from "lucide-react";
+import { LogOut, Bell, CreditCard, User, FileText, HelpCircle, Users, ChevronRight, Palette } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { toast } from "sonner";
 import {
@@ -36,6 +36,11 @@ export function ProfileNav() {
       title: "Account",
       href: "/profile",
       icon: <User className="h-4 w-4" />,
+    },
+    {
+      title: "Appearance",
+      href: "/profile/appearance",
+      icon: <Palette className="h-4 w-4" />,
     },
     {
       title: "Notifications",

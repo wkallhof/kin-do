@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export function MarketingNavbar() {
   const pathname = usePathname();
@@ -57,6 +58,7 @@ export function MarketingNavbar() {
           >
             About
           </Link>
+          <ThemeToggle />
           <Link href="/welcome">
             <Button>Try for Free</Button>
           </Link>
@@ -106,6 +108,9 @@ export function MarketingNavbar() {
             >
               About
             </Link>
+            <div className="py-2">
+              <ThemeToggle />
+            </div>
             <Link href="/welcome" onClick={() => setIsMenuOpen(false)}>
               <Button className="w-full">Try for Free</Button>
             </Link>

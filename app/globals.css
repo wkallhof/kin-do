@@ -3,28 +3,67 @@
 @tailwind utilities;
 
 @layer base {
+  /* Base theme (light) */
   :root {
-    --background: 0 0% 100%;
+    --background: 30 20% 98%; /* Warmer white background */
     --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
+    
+    --card: 35 30% 96%; /* Warmer card background */
     --card-foreground: 240 10% 3.9%;
+    
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    
+    --primary: 220 60% 50%; /* More vibrant primary */
     --primary-foreground: 0 0% 98%;
+    
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
+    
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
+    
+    --accent: 220 40% 90%;
     --accent-foreground: 240 5.9% 10%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
+    
+    --border: 240 5.9% 14%; /* Darker border for better contrast */
     --input: 240 5.9% 90%;
     --ring: 240 10% 3.9%;
     --radius: 0.5rem;
+
+    /* Activity card theme colors - only applied when theme-vibrant class is used */
+    --indoor-bg: 0 0% 100%;
+    --indoor-border: 210 50% 90%;
+    --indoor-text: 210 50% 40%;
+    
+    --outdoor-bg: 0 0% 100%;
+    --outdoor-border: 120 40% 90%;
+    --outdoor-text: 120 40% 40%;
+    
+    --both-bg: 0 0% 100%;
+    --both-border: 270 40% 90%;
+    --both-text: 270 40% 40%;
   }
+
+  /* Apply vibrant versions of the theme colors when the theme-vibrant class is added */
+  :root.theme-vibrant {
+    /* Activity card theme colors - vibrant versions */
+    --indoor-bg: 210 90% 95%;
+    --indoor-border: 210 90% 75%;
+    --indoor-text: 210 90% 30%;
+    
+    --outdoor-bg: 120 60% 95%;
+    --outdoor-border: 120 60% 75%;
+    --outdoor-text: 120 80% 25%;
+    
+    --both-bg: 270 60% 95%;
+    --both-border: 270 60% 75%;
+    --both-text: 270 80% 30%;
+  }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -50,6 +89,66 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Activity card theme colors - dark mode subtle versions */
+    --indoor-bg: 240 10% 3.9%;
+    --indoor-border: 210 40% 30%;
+    --indoor-text: 210 40% 85%;
+    
+    --outdoor-bg: 240 10% 3.9%;
+    --outdoor-border: 120 30% 30%;
+    --outdoor-text: 120 40% 85%;
+    
+    --both-bg: 240 10% 3.9%;
+    --both-border: 270 30% 30%;
+    --both-text: 270 40% 85%;
+  }
+
+  /* Dark mode vibrant theme */
+  .dark.theme-vibrant {
+    /* Activity card theme colors for dark mode - vibrant versions */
+    --indoor-bg: 210 70% 15%;
+    --indoor-border: 210 70% 35%;
+    --indoor-text: 210 80% 75%;
+    
+    --outdoor-bg: 120 50% 15%;
+    --outdoor-border: 120 50% 35%;
+    --outdoor-text: 120 70% 75%;
+    
+    --both-bg: 270 50% 15%;
+    --both-border: 270 50% 35%;
+    --both-text: 270 70% 75%;
+  }
+
+  /* Optional: Create an alternate warm theme */
+  .theme-warm {
+    --background: 40 30% 97%;
+    --foreground: 20 10% 5%;
+    
+    --card: 35 40% 95%;
+    --card-foreground: 20 10% 5%;
+    
+    --popover: 35 30% 98%;
+    --popover-foreground: 20 10% 5%;
+    
+    --primary: 25 95% 50%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 30 30% 92%;
+    --secondary-foreground: 20 10% 5%;
+    
+    --muted: 30 20% 92%;
+    --muted-foreground: 20 5% 40%;
+    
+    --accent: 25 50% 90%;
+    --accent-foreground: 20 10% 5%;
+    
+    --destructive: 0 85% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 25 30% 80%;
+    --input: 30 20% 90%;
+    --ring: 25 50% 50%;
   }
 }
 
