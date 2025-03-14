@@ -150,7 +150,7 @@ export function ResourceList({ environment }: ResourceListProps) {
           value={newResourceName}
           onChange={(e) => setNewResourceName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleAddResource()}
-          className="flex-1 h-12 py-2"
+          className="flex-1 h-12 py-2 bg-background"
         />
         <Button onClick={handleAddResource} size="icon" className="h-12 w-12">
           <Plus className="h-4 w-4" />
@@ -166,7 +166,7 @@ export function ResourceList({ environment }: ResourceListProps) {
           resources.map((resource) => (
             <div
               key={resource.id}
-              className="flex items-center justify-between p-3 border rounded-md hover:bg-muted/50 transition-colors"
+              className="flex items-center justify-between p-3 rounded-md hover:bg-muted/50 transition-colors bg-background shadow-sm"
             >
               {editingId === resource.id ? (
                 <div className="flex items-center space-x-2 flex-1">

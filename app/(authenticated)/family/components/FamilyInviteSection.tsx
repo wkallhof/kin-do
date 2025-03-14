@@ -22,7 +22,7 @@ export function FamilyInviteSection({ inviteCode }: FamilyInviteSectionProps) {
     <Card className="max-w-xl">
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
         <CollapsibleTrigger asChild>
-          <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-accent/50 rounded-t-lg">
+          <div className="px-6 py-3 flex items-center justify-between cursor-pointer rounded-t-lg">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-primary" />
               <h3 className="text-md font-medium">Invite Family Members</h3>

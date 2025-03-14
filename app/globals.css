@@ -6,15 +6,15 @@
   /* Base theme (light) */
   :root {
     --background: 30 20% 98%; /* Warmer white background */
-    --foreground: 240 10% 3.9%;
+    --foreground: 3 22% 16%;
     
-    --card: 35 30% 96%; /* Warmer card background */
-    --card-foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 3 22% 16%;
     
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     
-    --primary: 220 60% 50%; /* More vibrant primary */
+    --primary: 17 88% 68%; /* More vibrant primary */
     --primary-foreground: 0 0% 98%;
     
     --secondary: 240 4.8% 95.9%;
@@ -32,21 +32,104 @@
     --border: 240 5.9% 14%; /* Darker border for better contrast */
     --input: 240 5.9% 90%;
     --ring: 240 10% 3.9%;
-    --radius: 0.5rem;
+    --radius: 1.75rem;
 
-    /* Activity card theme colors */
-    --indoor-bg: 210 90% 95%;
-    --indoor-border: 210 90% 75%;
-    --indoor-text: 210 90% 30%;
-    
-    --outdoor-bg: 120 60% 95%;
-    --outdoor-border: 120 60% 75%;
-    --outdoor-text: 120 80% 25%;
-    
-    --both-bg: 270 60% 95%;
-    --both-border: 270 60% 75%;
-    --both-text: 270 80% 30%;
+    /* Card palette colors */
+    --card-palette-1: 260 77% 92%;
+    --card-palette-2: 34 100% 72%;
+    --card-palette-3: 84 34% 54%;
+    --card-palette-4: 49 80% 75%;
+    --card-palette-5: 11 64% 70%;
+
+    --card-palette-text: 220 15% 25%;
+
+    /* Background gradient values */
+    --background-gradient-end: 12 100% 92%;
+    --background-gradient-start: 7 100% 98%;
   }
+
+  /* [
+    {
+        "name": "Seashell",
+        "description": "Primary background",
+        "hex": "FEEEEA",
+        "hsl": [12,91,96]
+    },
+    {
+        "name": "Pale Dogwood",
+        "description": "Icon Background",
+        "hex": "FFDDCF",
+        "hsl": [18,100,91]
+    },
+    {
+        "name": "Royal purple",
+        "description": "Icon Accent and Card Background",
+        "hex": "7D57A6",
+        "hsl": [269,31,50]
+    },
+    {
+        "name": "Coral",
+        "description": "Card Background, Primary color, active nav",
+        "hex": "F58C64",
+        "hsl": [17,88,68]
+    },
+    {
+        "name": "Earth yellow",
+        "description": "Avatar Background",
+        "hex": "FFC272",
+        "hsl": [34,100,72]
+    },
+    {
+        "name": "Pale purple",
+        "description": "Category Color",
+        "hex": "E4D9FA",
+        "hsl": [260,77,92]
+    },
+    {
+        "name": "Columbia blue",
+        "description": "Category Color",
+        "hex": "C8E2FE",
+        "hsl": [211,96, 89]
+    },
+    {
+        "name": "Chestnut",
+        "description": "Compliments Coral background. Text or Graphic",
+        "hex": "A84D37",
+        "hsl": [12,51,44]
+    },
+    {
+        "name": "Mauve",
+        "description": "Avatar Background",
+        "hex": "E1ABF7",
+        "hsl": [283,83,82]
+    },
+    {
+        "name": "Bistre",
+        "description": "Dark Text",
+        "hex": "322120",
+        "hsl": [3,22,16]
+    },
+    {
+        "name": "Olivine",
+        "description": "Card Graphic Green",
+        "hex": "90B160",
+        "hsl": [84,34,54]
+    },
+    {
+        "name": "White",
+        "description": "White for nav and cards and drawers",
+        "hex": "FFFEFE",
+        "hsl": [0,100,100]
+    },
+    {
+        "name": "Taupe gray",
+        "description": "Text on white for nav and cards and drawers",
+        "hex": "7C7D8B",
+        "hsl": [236,6,52]
+    }
+] */
+
+/* Background Start : hsl(12, 100%, 96%), Background End : hsl(9, 100%, 96%) */
 
   .dark {
     --background: 240 10% 3.9%;
@@ -74,58 +157,18 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Activity card theme colors - dark mode */
-    --indoor-bg: 210 70% 15%;
-    --indoor-border: 210 70% 35%;
-    --indoor-text: 210 80% 75%;
-    
-    --outdoor-bg: 120 50% 15%;
-    --outdoor-border: 120 50% 35%;
-    --outdoor-text: 120 70% 75%;
-    
-    --both-bg: 270 50% 15%;
-    --both-border: 270 50% 35%;
-    --both-text: 270 70% 75%;
-  }
-
-  /* Optional: Create an alternate warm theme */
-  .theme-warm {
-    --background: 40 30% 97%;
-    --foreground: 20 10% 5%;
-    
-    --card: 35 40% 95%;
-    --card-foreground: 20 10% 5%;
-    
-    --popover: 35 30% 98%;
-    --popover-foreground: 20 10% 5%;
-    
-    --primary: 25 95% 50%;
-    --primary-foreground: 0 0% 100%;
-    
-    --secondary: 30 30% 92%;
-    --secondary-foreground: 20 10% 5%;
-    
-    --muted: 30 20% 92%;
-    --muted-foreground: 20 5% 40%;
-    
-    --accent: 25 50% 90%;
-    --accent-foreground: 20 10% 5%;
-    
-    --destructive: 0 85% 50%;
-    --destructive-foreground: 0 0% 100%;
-    
-    --border: 25 30% 80%;
-    --input: 30 20% 90%;
-    --ring: 25 50% 50%;
+    /* Background gradient values for dark mode */
+    --background-gradient-start: 240 10% 3.9%;
+    --background-gradient-end: 240 10% 3.9%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground;
+    background-image: linear-gradient(to bottom, hsl(var(--background-gradient-start)), hsl(var(--background-gradient-end)));
+    background-attachment: fixed;
+    background-size: cover;
   }
 }
 

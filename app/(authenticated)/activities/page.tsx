@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users, familyMembers, focusAreas, resources } from '@/lib/db/schema';
-import { PageHeader } from '../components/page-header';
 import { ClientActivitiesPage } from './components/ClientActivitiesPage';
+import { PageHeader } from '../components/page-header';
 
 export default async function ActivitiesPage() {
   const session = await auth();
@@ -63,18 +63,19 @@ export default async function ActivitiesPage() {
   });
 
   return (
-    <main className="container py-6">
+    <div className="container py-6">
+        <div className="pt-12">
+          <PageHeader
+            title={`Hey, ${user.name?.split(' ')[0]}. Let's find something fun for today!`}
+            titleClassName="text-4xl font-medium tracking-wide"
+          />
+        </div>
 
-      <PageHeader
-        title="Today's Activities"
-        description="Get the latest activities for your family"
-      />
-
-      <ClientActivitiesPage
-        familyMembers={members}
-        focusAreas={familyFocusAreas}
-        resources={familyResources}
-      />
-    </main>
+        <ClientActivitiesPage
+          familyMembers={members}
+          focusAreas={familyFocusAreas}
+          resources={familyResources}
+        />
+    </div>
   );
 } 

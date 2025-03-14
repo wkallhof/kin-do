@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
       - The appropriate environment setting (must be either "indoor" or "outdoor", never "both")
       - Required resources from the provided list only
       - Targeted focus areas with specific mentions of which family members benefit
+      - A relevant Lucide icon name that best represents the activity (e.g., "Dumbbell" for exercise, "Palette" for art, "Brain" for learning activities, "Music" for musical activities, etc.)
       
       Important guidelines:
       - Activities should be age-appropriate and safe
@@ -74,7 +75,8 @@ export async function POST(req: NextRequest) {
       - Adapt complexity based on participating family members' ages
       - Ensure activities are unique and different from previous ones
       - Make activities engaging and fun while meeting developmental goals
-      - When environment preference is "both", freely choose between indoor and outdoor for each activity
+      - When environment preference is "both", freely choose between indoor or outdoor for each activity
+      - Choose an appropriate Lucide icon that clearly represents the activity type
     `;
 
     const userPrompt = `

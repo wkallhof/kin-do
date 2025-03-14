@@ -239,14 +239,14 @@ export function ClientActivitiesPage({
           <Button 
             variant="outline"
             onClick={() => stop()}
-            className="w-full max-w-sm"
+            className="w-full h-12 text-lg"
           >
             Stop Generation
           </Button>
         ) : (
           <Button 
             onClick={handleGenerateActivities}
-            className="w-full max-w-sm"
+            className="w-full h-12 text-lg"
           >
             Generate Activities
           </Button>
@@ -254,7 +254,7 @@ export function ClientActivitiesPage({
       </div>
 
       <div className="space-y-6">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {/* Render activities using the combined displayedActivities */}
           {displayedActivities?.map((activity, index) => (
             activity && (
@@ -262,6 +262,7 @@ export function ClientActivitiesPage({
                 key={`${activity.title}-${index}`}
                 activity={activity as Activity}
                 onSelect={handleSelectActivity}
+                colorIndex={index % 5 + 1}
               />
             )
           ))}
@@ -269,7 +270,7 @@ export function ClientActivitiesPage({
           {/* Show skeletons for remaining activities while loading */}
           {Array.from({ length: getSkeletonCount() }).map((_, i) => (
             <div key={`skeleton-${i}`} className="space-y-4">
-              <Skeleton className="h-[200px] w-full rounded-lg" />
+              <Skeleton className="h-[90px] w-full rounded-lg" />
             </div>
           ))}
         </div>
@@ -294,7 +295,7 @@ export function ClientActivitiesPage({
             <Button
               onClick={handleGenerateMore}
               variant="outline"
-              className="w-full max-w-sm"
+              className="w-full h-12 text-lg text-muted-foreground border-2 border-primary hover:bg-primary/10"
             >
               Generate More Activities
             </Button>

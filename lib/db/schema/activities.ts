@@ -25,6 +25,7 @@ export interface ActivityData {
   title: string;
   description: string;
   instructions: string;
+  icon: string;
 }
 
 // Current schema versions

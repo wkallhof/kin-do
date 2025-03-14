@@ -5,6 +5,7 @@ export const activitySchema = z.object({
   description: z.string(),
   instructions: z.string(),
   environment: z.enum(['indoor', 'outdoor', 'both']),
+  icon: z.string(),
   requiredResources: z.array(z.object({
     id: z.string(),
     name: z.string(),

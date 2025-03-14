@@ -9,6 +9,15 @@ export default {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    'bg-card-bg-1',
+    'bg-card-bg-2',
+    'bg-card-bg-3',
+    'bg-card-bg-4',
+    'bg-card-bg-5',
+    'text-card-text',
+    'bg-gradient-primary',
+  ],
   theme: {
   	extend: {
   		colors: {
@@ -16,8 +25,14 @@ export default {
   			foreground: 'hsl(var(--foreground))',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
-  				foreground: 'hsl(var(--card-foreground))'
+  				foreground: 'hsl(var(--card-foreground))',
   			},
+            'card-bg-1': 'hsl(var(--card-palette-1))',
+            'card-bg-2': 'hsl(var(--card-palette-2))',
+            'card-bg-3': 'hsl(var(--card-palette-3))',
+            'card-bg-4': 'hsl(var(--card-palette-4))',
+            'card-bg-5': 'hsl(var(--card-palette-5))',
+            'card-text': 'hsl(var(--card-palette-text))',
   			popover: {
   				DEFAULT: 'hsl(var(--popover))',
   				foreground: 'hsl(var(--popover-foreground))'
@@ -96,7 +111,13 @@ export default {
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
+  		},
+		fontFamily: {
+			sans: ['Inter', 'sans-serif'],
+		},
+        backgroundImage: {
+          'gradient-primary': 'linear-gradient(to bottom right, hsl(var(--background-gradient-start)), hsl(var(--background-gradient-end)))',
+        },
   	}
   },
   plugins: [animate, typography],

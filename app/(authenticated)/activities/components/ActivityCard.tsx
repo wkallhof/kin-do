@@ -2,95 +2,111 @@
 
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { type Activity } from "@/app/(authenticated)/activities/types";
-import { Home, Trees } from "lucide-react";
+import { Home, Trees, HelpCircle, type LucideIcon, type LucideProps } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 
 interface ActivityCardProps {
   activity: Activity;
   onSelect: (activity: Activity) => void;
+  colorIndex?: number; // Optional prop to control the color
 }
 
-export function ActivityCard({ activity, onSelect }: ActivityCardProps) {
+// Dynamic Lucide icon component with TypeScript safety
+function DynamicIcon({ 
+  iconName, 
+  ...props 
+}: { 
+  iconName: string; 
+} & LucideProps) {
+  // Type assertion to access Lucide icons dynamically
+  const IconComponent = (LucideIcons as unknown as Record<string, LucideIcon>)[iconName];
+  
+  if (IconComponent) {
+    return <IconComponent {...props} />;
+  }
+  
+  // Fallback to HelpCircle if icon not found
+  return <HelpCircle {...props} />;
+}
+
+function EnvironmentIcon({ 
+  environment, 
+  className,
+  strokeWidth = 2 
+}: { 
+  environment: Activity['environment']; 
+  className?: string;
+  strokeWidth?: number;
+}) {
+  if (environment === "indoor") {
+    return <Home className={className} strokeWidth={strokeWidth} />;
+  }
+  if (environment === "outdoor") {
+    return <Trees className={className} strokeWidth={strokeWidth} />;
+  }
+  return (
+    <div className="flex gap-1">
+      <Home className={className} strokeWidth={strokeWidth} />
+      <Trees className={className} strokeWidth={strokeWidth} />
+    </div>
+  );
+}
+
+export function ActivityCard({ activity, onSelect, colorIndex = 1 }: ActivityCardProps) {
   const {
     title,
-    description,
-    requiredResources,
-    focusAreas,
+    icon = "PlaySquare", // Default to PlaySquare icon for kid activities
     environment,
   } = activity;
+
+  // Ensure colorIndex is between 1 and 5
+  const safeColorIndex = ((colorIndex - 1) % 5) + 1;
 
   return (
     <Card 
       className={cn(
-        "cursor-pointer transition-all hover:shadow-md",
-        environment === "indoor" 
-          ? "border-blue-200" 
-          : environment === "outdoor" 
-            ? "border-green-200" 
-            : "border-purple-200"
+        "cursor-pointer transition-all overflow-hidden relative rounded-3xl border-0 shadow-md",
+        "flex flex-row items-center p-3 bg-background" // White background with row layout
       )}
       onClick={() => onSelect(activity)}
     >
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="line-clamp-1">{title}</CardTitle>
-            <CardDescription className="line-clamp-2 mt-1">
-              {description}
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="pb-2">
-        <div className="flex flex-wrap gap-1 mb-2">
-          {focusAreas?.slice(0, 3).map((area: { title: string }, index: number) => (
-            <Badge key={index} variant="outline" className="text-xs">
-              {area.title}
-            </Badge>
-          ))}
-          {(focusAreas?.length ?? 0) > 3 && (
-            <Badge variant="outline" className="text-xs">
-              +{(focusAreas?.length ?? 0) - 3} more
-            </Badge>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between text-xs pt-0">
+      {/* Icon container with colored background */}
+      <div className={cn(
+        "flex items-center justify-center",
+        "h-16 w-16 rounded-2xl mr-4", // Square with rounded corners
+        `bg-card-bg-${safeColorIndex}` // Colored background based on index
+      )}>
+        <DynamicIcon 
+          iconName={icon}
+          className="h-8 w-8 text-gray-700/70 mix-blend-multiply"
+          strokeWidth={1.5}
+        />
+      </div>
+      
+      {/* Title section */}
+      <div className="flex-1">
+        <CardTitle className="text-lg font-semibold text-gray-800">
+          {title}
+        </CardTitle>
+        
+        {/* Optional subtitle or lesson count could go here */}
         {environment && (
-          <div className={cn(
-            "rounded-full p-1.5",
-            environment === "indoor"
-              ? "bg-blue-100" 
-              : environment === "outdoor" 
-                ? "bg-green-100" 
-                : "bg-purple-100"
-          )}>
-            {environment === "indoor" ? (
-              <Home className="h-4 w-4 text-blue-500" />
-            ) : environment === "outdoor" ? (
-              <Trees className="h-4 w-4 text-green-500" />
-            ) : (
-              <div className="flex gap-1">
-                <Home className="h-4 w-4 text-purple-500" />
-                <Trees className="h-4 w-4 text-purple-500" />
-              </div>
-            )}
+          <div className="flex items-center mt-1">
+            <EnvironmentIcon 
+              environment={environment} 
+              className="h-3.5 w-3.5 text-gray-500 mr-1.5"
+              strokeWidth={1.5}
+            />
+            <span className="text-sm text-gray-500">
+              {environment.charAt(0).toUpperCase() + environment.slice(1)}
+            </span>
           </div>
         )}
-        {(requiredResources?.length ?? 0) > 0 && (
-          <div className="text-xs">
-            {requiredResources?.length} items needed
-          </div>
-        )}
-      </CardFooter>
+      </div>
     </Card>
   );
-} 
+}
