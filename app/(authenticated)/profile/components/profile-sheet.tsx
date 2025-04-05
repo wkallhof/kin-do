@@ -10,19 +10,23 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { AccountForm } from "./account-form";
+import { ReactNode } from "react";
 
-interface AccountSheetProps {
+interface ProfileSheetProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  user: {
-    id: number;
-    name: string;
-    email: string;
-  };
+  title: string;
+  description?: string;
+  children: ReactNode;
 }
 
-export function AccountSheet({ isOpen, onOpenChange, user }: AccountSheetProps) {
+export function ProfileSheet({ 
+  isOpen, 
+  onOpenChange, 
+  title, 
+  description, 
+  children 
+}: ProfileSheetProps) {
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto [&>button:first-child]:hidden">
@@ -34,13 +38,15 @@ export function AccountSheet({ isOpen, onOpenChange, user }: AccountSheetProps) 
                 <span className="sr-only">Back</span>
               </Button>
             </SheetClose>
-            <SheetTitle className="w-full text-center">Account</SheetTitle>
+            <SheetTitle className="w-full text-center">{title}</SheetTitle>
           </div>
-          <SheetDescription className="sr-only">
-            Manage your account information and password
-          </SheetDescription>
+          {description && (
+            <SheetDescription className={description === "sr-only" ? "sr-only" : ""}>
+              {description}
+            </SheetDescription>
+          )}
         </SheetHeader>
-        <AccountForm user={user} />
+        {children}
       </SheetContent>
     </Sheet>
   );

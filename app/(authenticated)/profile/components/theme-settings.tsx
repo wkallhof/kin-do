@@ -6,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Moon, Sun, Computer } from "lucide-react";
-import { toast } from "sonner";
 
 export function ThemeSettings() {
   const { theme, setTheme } = useTheme();
@@ -29,7 +28,6 @@ export function ThemeSettings() {
         onValueChange={(value) => {
           if (value === "light" || value === "dark" || value === "system") {
             setTheme(value);
-            toast.success(`Theme changed to ${value}`);
           }
         }}
         className="grid grid-cols-1 sm:grid-cols-3 gap-4"

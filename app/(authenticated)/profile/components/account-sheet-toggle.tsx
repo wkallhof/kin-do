@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ChevronRight } from "lucide-react";
-import { AccountSheet } from "./account-sheet";
+import { ProfileSheet } from "./profile-sheet";
+import { AccountForm } from "./account-form";
 
 interface AccountSheetToggleProps {
   user: {
@@ -37,11 +38,14 @@ export function AccountSheetToggle({ user, initials }: AccountSheetToggleProps) 
       </button>
 
       {/* Profile Sheet */}
-      <AccountSheet 
+      <ProfileSheet 
         isOpen={isSheetOpen} 
         onOpenChange={setIsSheetOpen} 
-        user={user} 
-      />
+        title="Account"
+        description="Manage your account information and password"
+      >
+        <AccountForm user={user} />
+      </ProfileSheet>
     </>
   );
 } 

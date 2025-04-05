@@ -4,11 +4,13 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronRight, Bell, CreditCard, FileText, HelpCircle, Users, Palette } from 'lucide-react';
+import { ChevronRight, CreditCard, FileText, HelpCircle, Palette, Users, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AccountSheetToggle } from './components/account-sheet-toggle';
 import { LogoutButton } from './components/logout-button';
-
+import { ThemeSettings } from './components/theme-settings';
+import { ProfileSheetToggle } from './components/profile-sheet-toggle';
+import { NotificationsForm } from './components/notifications-form';
 
 interface NavItem {
   title: string;
@@ -39,18 +41,6 @@ export default async function ProfilePage() {
   }
 
   const navItems: NavItem[] = [
-    {
-      title: "Appearance",
-      href: "/profile/appearance",
-      icon: <Palette className="h-5 w-5" />,
-      description: "Customize the app's theme and appearance",
-    },
-    {
-      title: "Notifications",
-      href: "/profile/notifications",
-      icon: <Bell className="h-5 w-5" />,
-      description: "Control how you receive notifications",
-    },
     {
       title: "Subscription",
       href: "/profile/subscription",
@@ -95,6 +85,29 @@ export default async function ProfilePage() {
       <Card>
         <CardContent className="p-0">
           <nav className="divide-y">
+            {/* Appearance with sheet functionality */}
+            <ProfileSheetToggle
+              title="Appearance"
+              description="Customize the app&apos;s theme and appearance"
+              sheetTitle="Appearance"
+              sheetDescription="Customize the look and feel of your Kin•Do experience"
+              icon={<Palette className="h-5 w-5" />}
+            >
+              <ThemeSettings />
+            </ProfileSheetToggle>
+
+            {/* Notifications with sheet functionality */}
+            <ProfileSheetToggle
+              title="Notifications"
+              description="Configure your notification preferences."
+              sheetTitle="Notifications"
+              sheetDescription="Configure your notification preferences."
+              icon={<Bell className="h-5 w-5" />}
+            >
+              <NotificationsForm user={user} />
+            </ProfileSheetToggle>
+
+            {/* Other navigation items */}
             {filteredNavItems.map((item) => (
               <a
                 key={item.href}
