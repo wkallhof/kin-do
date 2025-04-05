@@ -10,6 +10,32 @@ const updateProfileSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const user = await db.query.users.findFirst({
+      where: eq(users.email, session.user.email),
+    });
+
+    if (!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+
+    return NextResponse.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
+  } catch (error) {
+    console.error("[PROFILE_GET]", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
 export async function PATCH(req: Request) {
   try {
     const session = await auth();

@@ -3,13 +3,12 @@ import { redirect } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
-import Link from 'next/link';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { LogOut, Bell, CreditCard, FileText, HelpCircle, Users, Palette } from 'lucide-react';
+import { ChevronRight, Bell, CreditCard, FileText, HelpCircle, Users, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AccountSheetToggle } from './components/account-sheet-toggle';
+import { LogoutButton } from './components/logout-button';
+
 
 interface NavItem {
   title: string;
@@ -90,27 +89,14 @@ export default async function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <Link 
-        href="/profile/account" 
-        className="flex items-center justify-between p-4 rounded-md hover:bg-muted"
-      >
-        <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16 border">
-            <AvatarFallback className="text-xl">{initials}</AvatarFallback>
-          </Avatar>
-          <div>
-            <h2 className="font-medium text-lg">{user.name}</h2>
-            <p className="text-muted-foreground">Edit personal information</p>
-          </div>
-        </div>
-        <ChevronRight className="h-5 w-5 text-muted-foreground" />
-      </Link>
+      {/* Account profile section with sheet functionality */}
+      <AccountSheetToggle user={user} initials={initials} />
 
       <Card>
         <CardContent className="p-0">
           <nav className="divide-y">
             {filteredNavItems.map((item) => (
-              <Link
+              <a
                 key={item.href}
                 href={item.href}
                 className={cn(
@@ -127,27 +113,13 @@ export default async function ProfilePage() {
                   </div>
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </Link>
+              </a>
             ))}
           </nav>
         </CardContent>
       </Card>
       
-      <form action={async () => {
-        'use server';
-        // This is just a placeholder for the server action
-        // In a real application, we would handle server-side logout logic here
-      }}>
-        <Button 
-          className="w-full text-destructive hover:text-destructive hover:bg-destructive/10" 
-          variant="ghost"
-          type="submit"
-          formAction="/api/auth/signout"
-        >
-          <LogOut className="h-5 w-5 mr-2" />
-          Log out
-        </Button>
-      </form>
+      <LogoutButton />
     </div>
   );
 } 
