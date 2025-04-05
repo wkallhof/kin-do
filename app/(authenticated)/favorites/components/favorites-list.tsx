@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ActivityCard } from "./activity-card";
 import { toast } from "sonner";
 import { ActivityDetailDrawer } from "../../activities/components/ActivityDetailDrawer";
 import { type Activity } from "@/app/(authenticated)/activities/types";
+import { ActivityCard } from "../../activities/components/ActivityCard";
 
 interface FavoriteActivity {
   id: number;
@@ -95,12 +95,12 @@ export function FavoritesList() {
   return (
     <>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {favorites.filter(favorite => favorite.activityData).map((favorite) => (
+        {favorites.filter(favorite => favorite.activityData).map((favorite, index) => (
           <ActivityCard
             key={favorite.id}
             activity={favorite.activityData}
-            isFavorite={true}
-            onClick={() => handleSelectActivity(favorite.activityData, favorite.id)}
+            onSelect={() => handleSelectActivity(favorite.activityData, favorite.id)}
+            colorIndex={index % 5 + 1}
           />
         ))}
       </div>
