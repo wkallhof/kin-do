@@ -110,14 +110,14 @@ export function ActivityDetailDrawer({
       {description && (
         <div>
           <h3 className="font-medium mb-2">Overview</h3>
-          <p className="text-sm text-muted-foreground">{description}</p>
+          <p className="text-muted-foreground">{description}</p>
         </div>
       )}
 
       {requiredResources && requiredResources.length > 0 && (
         <div>
           <h3 className="font-medium mb-2">Required Resources</h3>
-          <ul className="list-disc list-inside text-sm text-muted-foreground">
+          <ul className="list-disc list-inside text-muted-foreground">
             {requiredResources.map((resource, index) => (
               <li key={index}>{resource.name}</li>
             ))}
@@ -128,7 +128,7 @@ export function ActivityDetailDrawer({
       {instructions && (
         <div>
           <h3 className="font-medium mb-2">Instructions</h3>
-          <div className="text-sm text-muted-foreground prose prose-sm max-w-none dark:prose-invert">
+          <div className="text-muted-foreground prose prose-sm max-w-none dark:prose-invert">
             <ReactMarkdown>{instructions}</ReactMarkdown>
           </div>
         </div>

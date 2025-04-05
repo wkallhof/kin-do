@@ -27,12 +27,12 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="relative min-h-screen">
             {/* Background decorative icons */}
-            <div className="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4 text-primary/10 opacity-20 select-none pointer-events-none z-[-1]">
+            {/* <div className="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4 text-primary/10 opacity-20 select-none pointer-events-none z-[-1]">
               <Puzzle size={180} strokeWidth={.5} className="text-primary" />
             </div>
             <div className="absolute top-0 left-0 -translate-x-1/4 translate-y-1/4 text-primary/10 opacity-20 select-none pointer-events-none z-[-1]">
               <Blocks size={160} strokeWidth={.5} className="text-primary" />
-            </div>
+            </div> */}
             <div className="relative z-10">
               {children}
             </div>
