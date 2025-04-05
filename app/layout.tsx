@@ -3,7 +3,6 @@ import type { Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from 'sonner';
-import { Puzzle, Blocks } from 'lucide-react';
 
 const inter = Inter({ subsets: ['latin'] });
 
