@@ -19,7 +19,6 @@ export default function ProfileLayout({
       />
       
       <div className="mt-8 md:flex">
-        {/* ProfileNav is now rendered inside the subpages when needed */}
         <div className="flex-1">
           {children}
         </div>

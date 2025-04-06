@@ -62,12 +62,7 @@ export function NotificationsForm({  }: NotificationsFormProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">Email Notifications</h3>
-        <p className="text-sm text-muted-foreground">
-          Configure which emails you receive from us
-        </p>
-        
+      <div>        
         <div className="mt-4 space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">

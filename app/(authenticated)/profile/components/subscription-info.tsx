@@ -9,24 +9,25 @@ import { Separator } from "@/components/ui/separator";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { CreditCard, ArrowRight } from "lucide-react";
 
+const subscriptionData = {
+  status: 'active',
+  plan: 'Premium',
+  billingCycle: 'Monthly',
+  nextBillingDate: '2023-08-01',
+  amount: '$9.99',
+};
+
 interface SubscriptionInfoProps {
   user: {
     id: number;
     name: string;
     email: string;
   };
-  subscription: {
-    status: string;
-    plan: string;
-    billingCycle: string;
-    nextBillingDate: string;
-    amount: string;
-  };
 }
 
 // We need the user param for type checking, though it's not used in this demo component yet
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function SubscriptionInfo({ user, subscription }: SubscriptionInfoProps) {
+export function SubscriptionInfo({ user }: SubscriptionInfoProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
@@ -57,19 +58,19 @@ export function SubscriptionInfo({ user, subscription }: SubscriptionInfoProps) 
         <div>
           <h3 className="text-lg font-medium">Current Plan</h3>
           <div className="flex items-center mt-1">
-            <span className="text-2xl font-bold">{subscription.plan}</span>
-            <Badge className="ml-2" variant={subscription.status === 'active' ? 'default' : 'outline'}>
-              {subscription.status === 'active' ? 'Active' : 'Inactive'}
+            <span className="text-2xl font-bold">{subscriptionData.plan}</span>
+            <Badge className="ml-2" variant={subscriptionData.status === 'active' ? 'default' : 'outline'}>
+              {subscriptionData.status === 'active' ? 'Active' : 'Inactive'}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {subscription.billingCycle} billing • {subscription.amount}
+            {subscriptionData.billingCycle} billing • {subscriptionData.amount}
           </p>
         </div>
         
         <div className="flex flex-col sm:items-end justify-center gap-2">
           <p className="text-sm text-muted-foreground">
-            Next billing date: <strong>{subscription.nextBillingDate}</strong>
+            Next billing date: <strong>{subscriptionData.nextBillingDate}</strong>
           </p>
           <Button 
             variant="outline" 
@@ -118,10 +119,10 @@ export function SubscriptionInfo({ user, subscription }: SubscriptionInfoProps) 
               
               <Button 
                 className="w-full mt-4" 
-                variant={subscription.plan === 'Basic' ? 'secondary' : 'outline'}
-                disabled={subscription.plan === 'Basic' || isLoading}
+                variant={subscriptionData.plan === 'Basic' ? 'secondary' : 'outline'}
+                disabled={subscriptionData.plan === 'Basic' || isLoading}
               >
-                {subscription.plan === 'Basic' ? 'Current Plan' : 'Downgrade'}
+                {subscriptionData.plan === 'Basic' ? 'Current Plan' : 'Downgrade'}
               </Button>
             </CardContent>
           </Card>
@@ -160,10 +161,10 @@ export function SubscriptionInfo({ user, subscription }: SubscriptionInfoProps) 
               
               <Button 
                 className="w-full mt-4" 
-                variant={subscription.plan === 'Premium' ? 'secondary' : 'default'}
-                disabled={subscription.plan === 'Premium' || isLoading}
+                variant={subscriptionData.plan === 'Premium' ? 'secondary' : 'default'}
+                disabled={subscriptionData.plan === 'Premium' || isLoading}
               >
-                {subscription.plan === 'Premium' ? 'Current Plan' : 'Upgrade'}
+                {subscriptionData.plan === 'Premium' ? 'Current Plan' : 'Upgrade'}
               </Button>
             </CardContent>
           </Card>
@@ -188,7 +189,7 @@ export function SubscriptionInfo({ user, subscription }: SubscriptionInfoProps) 
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will cancel your subscription. Your plan will remain active until {subscription.nextBillingDate}, after which you&apos;ll be downgraded to the free plan.
+                This will cancel your subscription. Your plan will remain active until {subscriptionData.nextBillingDate}, after which you&apos;ll be downgraded to the free plan.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

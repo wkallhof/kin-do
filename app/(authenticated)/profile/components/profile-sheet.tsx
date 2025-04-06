@@ -29,8 +29,8 @@ export function ProfileSheet({
 }: ProfileSheetProps) {
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg overflow-y-auto [&>button:first-child]:hidden">
-        <SheetHeader className="mb-6 pb-4 border-b">
+      <SheetContent className="w-full sm:max-w-lg flex flex-col [&>button:first-child]:hidden">
+        <SheetHeader className="sticky top-0 z-10 bg-background pb-4 border-b">
           <div className="flex items-center relative">
             <SheetClose asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8 p-0 rounded-full absolute left-0">
@@ -46,7 +46,9 @@ export function ProfileSheet({
             </SheetDescription>
           )}
         </SheetHeader>
-        {children}
+        <div className="overflow-y-auto flex-1">
+          {children}
+        </div>
       </SheetContent>
     </Sheet>
   );
