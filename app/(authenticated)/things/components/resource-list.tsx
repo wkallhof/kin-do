@@ -6,6 +6,7 @@ import { Plus, Trash2, Check, X, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { Card, CardContent } from '@/components/ui/card';
 
 type Environment = 'indoor' | 'outdoor';
 
@@ -157,50 +158,54 @@ export function ResourceList({ environment }: ResourceListProps) {
         </Button>
       </div>
 
-      <div className="space-y-2">
-        {resources.length === 0 ? (
-          <p className="text-muted-foreground text-center py-4">
-            No {environment} resources yet. Add some to get started!
-          </p>
-        ) : (
-          resources.map((resource) => (
-            <div
-              key={resource.id}
-              className="flex items-center justify-between p-3 rounded-md hover:bg-muted/50 transition-colors bg-background shadow-sm"
-            >
-              {editingId === resource.id ? (
-                <div className="flex items-center space-x-2 flex-1">
-                  <Input
-                    value={editingName}
-                    onChange={(e) => setEditingName(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit(resource.id)}
-                    autoFocus
-                    className="flex-1"
-                  />
-                  <Button onClick={() => handleSaveEdit(resource.id)} size="icon" variant="ghost">
-                    <Check className="h-4 w-4" />
-                  </Button>
-                  <Button onClick={handleCancelEdit} size="icon" variant="ghost">
-                    <X className="h-4 w-4" />
-                  </Button>
+      <Card>
+        <CardContent className="p-0">
+          <div className="divide-y">
+            {resources.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">
+                No {environment} resources yet. Add some to get started!
+              </p>
+            ) : (
+              resources.map((resource) => (
+                <div
+                  key={resource.id}
+                  className="flex items-center justify-between p-4 hover:bg-muted transition-colors"
+                >
+                  {editingId === resource.id ? (
+                    <div className="flex items-center space-x-2 flex-1">
+                      <Input
+                        value={editingName}
+                        onChange={(e) => setEditingName(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit(resource.id)}
+                        autoFocus
+                        className="flex-1"
+                      />
+                      <Button onClick={() => handleSaveEdit(resource.id)} size="icon" variant="ghost">
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button onClick={handleCancelEdit} size="icon" variant="ghost">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="flex-1">{resource.name}</span>
+                      <div className="flex items-center space-x-1">
+                        <Button onClick={() => handleStartEdit(resource)} size="icon" variant="ghost">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button onClick={() => handleDeleteResource(resource.id)} size="icon" variant="ghost" className="text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </div>
-              ) : (
-                <>
-                  <span className="flex-1">{resource.name}</span>
-                  <div className="flex items-center space-x-1">
-                    <Button onClick={() => handleStartEdit(resource)} size="icon" variant="ghost">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button onClick={() => handleDeleteResource(resource.id)} size="icon" variant="ghost" className="text-destructive">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))
-        )}
-      </div>
+              ))
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 } 

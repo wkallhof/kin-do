@@ -46,7 +46,7 @@ export function ScrollDrawer({
           </div>
 
           <ScrollArea className="flex-1 overflow-auto px-6">
-            <div className="space-y-6 pr-4 pt-6 pb-6">
+            <div className="space-y-6 pt-6 pb-6">
               {children}
             </div>
           </ScrollArea>
